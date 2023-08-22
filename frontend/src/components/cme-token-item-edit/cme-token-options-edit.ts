@@ -74,6 +74,7 @@ export class TokenOptionsEdit extends LitElement {
   private _onInputChange(ev: CustomEvent) {
     const el = ev.currentTarget as VscodeInputbox;
     const {index, name} = el.dataset;
+    
 
     this._options = this._options.map((o, i) => {
       const {label, value, description, markedForDeletion} = o;

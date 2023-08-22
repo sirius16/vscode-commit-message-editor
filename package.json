@@ -2,10 +2,10 @@
   "name": "commit-message-editor",
   "displayName": "Commit Message Editor",
   "description": "Edit commit messages in a convenient way.",
-  "version": "0.25.0",
+  "version": "0.26.1",
   "license": "MIT",
   "preview": false,
-  "publisher": "adam-bender",
+  "publisher": "sirius16",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -18,6 +18,13 @@
     "semantic",
     "conventional",
     "commit"
+  ],
+  "keybindings": [
+    {
+      "command": "commitMessageEditor.openEditor",
+      "key": "ctrl+alt+g e",
+      "mac": "cmd+alt+g e"
+    }
   ],
   "icon": "icon.png",
   "repository": {
@@ -340,7 +347,8 @@
     "typescript": "^4.9.5",
     "vscode-test": "^1.5.2",
     "wdio-chromedriver-service": "^8.1.1",
-    "wdio-vscode-service": "^5.0.0"
+    "wdio-vscode-service": "^5.0.0",
+    "lit": "2.8.0"
   },
   "dependencies": {
     "ajv": "^8.12.0",
