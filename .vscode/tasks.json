@@ -23,11 +23,20 @@
       "label": "npm: build - frontend",
       "detail": "npm run build:bundle"
     },
+    // {
+    //   "label": "Terminate All Tasks",
+    //   "command": "echo ${input:terminate}",
+    //   "type": "shell",
+    //   "problemMatcher": []
+    // },
     {
-      "label": "Terminate All Tasks",
-      "command": "echo ${input:terminate}",
-      "type": "shell",
-      "problemMatcher": []
+      "type": "npm",
+      "script": "build:watch",
+      "path": "frontend",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build:watch - frontend",
+      "detail": "npm run clean && tsc --watch"
     }
   ],
   "inputs": [
