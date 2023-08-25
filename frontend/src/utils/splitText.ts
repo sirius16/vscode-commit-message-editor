@@ -1,3 +1,4 @@
+import { VscodeButton } from '@bendera/vscode-webview-elements';
 import {VscodeInputbox} from '@bendera/vscode-webview-elements/dist/vscode-inputbox';
 
 /**
@@ -8,32 +9,34 @@ import {VscodeInputbox} from '@bendera/vscode-webview-elements/dist/vscode-input
  * @param {string} detail The string to split
  * @param {VscodeInputbox} target The vscode inputbox element to split the string for
  */
-function splitTextInInputBox(detail: string, target: VscodeInputbox) {
-  const input: HTMLInputElement = <HTMLInputElement>(
-    target?.shadowRoot?.querySelector?.('div > div.input-wrapper > textarea')
-  );
-  const previousTokens = detail
-    .substring(0, <number>input.selectionStart)
-    .split(/\s+/g);
-  const scrollHeight = input.scrollHeight;
-  const result = splitText(detail);
+// function splitTextInInputBox(detail: string, target: VscodeInputbox) {
+//   const input: HTMLInputElement = <HTMLInputElement>(
+//     target?.shadowRoot?.querySelector?.('div > div.input-wrapper > textarea')
+//   );
+//   input.dataset.selectionStart = input?.selectionStart?.toString();
+//   const previousTokens = detail
+//   .substring(0, <number>input.selectionStart)
+//   .split(/\s+/g);
+//   const scrollHeight = input.scrollHeight;
+//   const result = splitText(detail.replaceAll('\n(?!\n)', ' '));
+//   target.value = input.value = result
+//   if (input.value.length === input.selectionStart) return;
 
-  target.value = result
-
-  const selection =
-    <number>(
-      [...target.value.matchAll(/\S+/g)][previousTokens.length - 1].index
-    ) + previousTokens[previousTokens.length - 1].length;
-  console.log({previousTokens, input, selection, target});
-  setTimeout(() => {
-    if (input.scrollHeight > scrollHeight) {
-      input.setSelectionRange(selection, selection);
-      // input.scrollBy(0, scrollHeight - input.scrollHeight)
-      input.blur();
-      input.focus();
-    }
-  }, 100);
-}
+//   const selection =
+//     <number>(
+//       [...target.value.matchAll(/\S+/g)][previousTokens.length - 1].index
+//     ) + previousTokens[previousTokens.length - 1].length;
+//   console.log({previousTokens, input, selection, target});
+// input.dataset.interval && clearInterval(Number(input.dataset.interval));
+//   input.dataset.interval = String(setInterval(() => {
+//     input.selectionStart = selection;
+//     input.selectionEnd = selection;
+//     input.scrollTop = scrollHeight;
+//     input.blur();
+//     input.focus();
+//     clearInterval(Number(input.dataset.interval));
+//   }, 10));
+// }
 
 
 /**
@@ -41,10 +44,10 @@ function splitTextInInputBox(detail: string, target: VscodeInputbox) {
 *
 * @export
 * @param {string} text The string to split
+* @param {number} [charLimit=72] The maximum number of characters per chunk
 * @return {string[]} The split string chunks
 */
-export default function splitText(text: string): string {
-  const charLimit = 72;
+export default function splitText(text: string, charLimit: number = 72): string[] {
   const punctation = true;
   const commas = true;
   const regex = new RegExp(`(.{0,${charLimit}}(?: |$)|^\\S+$)[\\r\\n]*`, 'gm');
@@ -77,21 +80,45 @@ export default function splitText(text: string): string {
         .filter((x) => x == '\n')
         .join('')
         .substring(1)
-    )
+    ).replaceAll('\u00B6', ' ')
   )
-  .join('\n')
-  .replaceAll('\u00B6', ' ');;
 }
+
+/**
+ * Splits a line into chunks of 72 characters, preserving line breaks and punctuation and indentation.
+ * @param {string} line The string to split
+ * @return {string} the split string chunks, joined by newlines
+ */
+export function splitLine(line: string): string {
+  const indent = line.match(/^\s*/)?.[0] || '';
+  const result = splitText(line.replace(indent, ''), 72 - indent.length);
+  return result.map((i: string) => indent + i).join('\n');
+}
+
+
 type VscodeInputboxInputEvent = CustomEvent<string> & {target: VscodeInputbox};
+
 
 
 /**
  * This function is an event handler for the VscodeInputboxInputEvent. It takes in the event details and target element. If the target element has a data attribute called "name" with a value of "body", it calls the splitTextInInputBox function with the event details and target element as arguments.
  */
-export function splitTextEventHandler({detail,target}: VscodeInputboxInputEvent) {
+export function splitTextEventHandler({target}: VscodeInputboxInputEvent) {
   if (target.dataset.name === 'body') {
-    target.dataset.timeout && clearTimeout(Number(target.dataset.timeout));
-    target.dataset.timeout = String(setTimeout(splitTextInInputBox, 5000, detail, target));
+    // target.dataset.timeout && clearTimeout(Number(target.dataset.timeout));
+    // target.dataset.timeout = String(setTimeout(splitTextInInputBox, 0, detail, target));
+
+    // splitTextInInputBox(detail, target);
+
+    const input: HTMLTextAreaElement = <HTMLTextAreaElement>(
+           target?.shadowRoot?.querySelector?.('div > div.input-wrapper > textarea')
+         );
+         input.blur();
+         input.focus();
+
+
+
+    document.querySelector("body > cme-editor-page")?.shadowRoot?.querySelector("cme-editor")?.shadowRoot?.querySelector("#t1-p1 > cme-form-view")?.shadowRoot?.querySelector<VscodeButton>("#success-button-form")?.click();
   }
 }
 

@@ -1,4 +1,4 @@
-import splitText from '../../utils/splitText';
+
 import {TokenValueDTO} from './types';
 
 class TemplateCompiler {
@@ -21,7 +21,7 @@ class TemplateCompiler {
     let compiled = this._template;
 
     this._tokens.forEach(({name, prefix = '', suffix = ''}) => {
-      let value = name === "body" ? splitText(<string>this._tokenValues[name] || '') : (this._tokenValues[name] || '');
+      let value = this._tokenValues[name] || '';
       value = value ? prefix + value + suffix : '';
       compiled = compiled.replace(new RegExp(`{${name}}`, 'g'), value);
     });

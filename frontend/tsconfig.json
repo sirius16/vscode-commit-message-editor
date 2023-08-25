@@ -27,6 +27,6 @@
       }
     ]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../src/utils/CommitMessageEditor.ts"],
   "exclude": []
 }

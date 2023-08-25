@@ -2,7 +2,7 @@
   "name": "commit-message-editor",
   "displayName": "Commit Message Editor",
   "description": "Edit commit messages in a convenient way.",
-  "version": "0.26.1",
+  "version": "0.28.1",
   "license": "MIT",
   "preview": false,
   "publisher": "sirius16",
@@ -34,7 +34,8 @@
     "onCommand:commitMessageEditor.openEditor",
     "onCommand:commitMessageEditor.copyFromSCMInputBox",
     "onCommand:commitMessageEditor.openSettingsPage",
-    "onWebviewPanel:copyFromExtensionMessageBox"
+    "onWebviewPanel:copyFromExtensionMessageBox",
+    "onLanguage:git-commit"
   ],
   "main": "./out/extension.js",
   "contributes": {
