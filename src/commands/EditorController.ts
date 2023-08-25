@@ -123,6 +123,9 @@ export default class EditorController {
         const { commitMessage, selectedRepositoryPath } = payload;
         this._git.setSCMInputBoxMessage(commitMessage, selectedRepositoryPath);
         break;
+      case 'copyToExtensionMessageBox':
+        this._ui?.sendSCMInputBoxValue(this._git.getSCMInputBoxMessage());
+        break;
       case 'closeTab':
         this._primaryEditorPanel?.dispose();
         break;

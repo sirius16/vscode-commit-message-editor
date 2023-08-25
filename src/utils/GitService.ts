@@ -116,8 +116,35 @@ class GitService {
 
     if (repo) {
       repo.inputBox.value = message;
+      vscode.commands.executeCommand('gitCommitMessageEditor.editor.command.openEditor');
+      this.showCOMMIT_EDITMSG(repositoryPath);
+      // this.setCOMMIT_EDITMSG(message, repositoryPath);
+
     }
   }
+
+
+  public showCOMMIT_EDITMSG(repositoryPath = ''): void {
+
+    const listener = vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (!editor)
+        return;
+      if (editor.document.uri.path === 'commit-editmsg:' + repositoryPath + '/COMMIT_EDITMSG')
+      return;
+      listener.dispose();
+      const doc = editor.document;
+      const firstLine = doc.lineAt(1);
+      const lastLine = doc.lineAt(doc.lineCount - 1);
+      // this.logger.logObject({firstLine, lastLine,selection:new vscode.Selection(firstLine.range.start, lastLine.range.end)  })
+      vscode.window.activeTextEditor?.revealRange(new vscode.Range(firstLine.range.start, lastLine.range.end));
+      (vscode.window.activeTextEditor as vscode.TextEditor).selection = new vscode.Selection(lastLine.lineNumber, lastLine.range.end.character, lastLine.lineNumber, lastLine.range.end.character);
+
+      // this.logger.logObject(new vscode.Selection(firstLine.range.start, lastLine.range.end));
+    });
+
+  }
+
+
 
   public async getRepositoryRecentCommitMessages(
     repository: Repository,

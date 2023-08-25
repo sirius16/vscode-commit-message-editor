@@ -21,7 +21,8 @@ declare global {
     | 'exportConfig'
     | 'loadCurrentConfig'
     | 'saveToSettings'
-    | 'openConfigurationPage';
+    | 'openConfigurationPage'
+    | 'copyToExtensionMessageBox';
 
   interface PostMessageDO {
     command: PostMessageCommand;

@@ -12,6 +12,7 @@ import {
   copyToSCMInputBox,
   updateTokenValues,
   recentCommitsRequest,
+  copyFromSCMInputBox,
 } from '../../store/actions';
 import {triggerInputboxRerender} from '../helpers';
 import '../cme-repo-selector';
@@ -19,9 +20,22 @@ import FormBuilder from './FormBuilder';
 import TemplateCompiler from './TemplateCompiler';
 import {CodeEditor} from '../cme-code-editor/cme-code-editor';
 import {RepoSelector} from '../cme-repo-selector';
+import parseCommitMessage from '../../utils/Tokenizer';
+import { TokenValueDTO } from './types';
 
 @customElement('cme-form-view')
 export class FormView extends connect(store)(LitElement) {
+    private _handlePostMessages(ev: MessageEvent<ReceivedMessageDO>) {
+      const {command, payload} = ev.data;
+      switch (command) {
+        case "copyFromSCMInputBox":
+          this._tokensValuesFromSCMInputBox = parseCommitMessage(payload as string);
+
+          // if (this._formItems.length)
+          //   this._setFormDataToTokens();
+          break;
+      }
+    }
   visibleCallback(): void {
     const inputs = this.shadowRoot?.querySelectorAll(
       'vscode-inputbox[multiline]'
@@ -37,11 +51,16 @@ export class FormView extends connect(store)(LitElement) {
     }
   }
 
+
+
   @query('#form-container')
   private _formContainer!: VscodeFormContainer;
 
   @queryAll('cme-code-editor')
   private _codeEditors!: NodeListOf<CodeEditor>;
+
+  @queryAll('[data-name]')
+  private _formItems!: NodeListOf<VscodeInputbox>;
 
   @state()
   private _saveAndClose = false;
@@ -53,7 +72,10 @@ export class FormView extends connect(store)(LitElement) {
   private _amendCbChecked = false;
 
   @state()
-  private _tokenValues: {[name: string]: string | string[]} = {};
+  private _tokenValues: TokenValueDTO = {};
+
+  @state()
+  private _tokensValuesFromSCMInputBox: TokenValueDTO = {};
 
   @state()
   private _dynamicTemplate: string[] = [];
@@ -64,8 +86,15 @@ export class FormView extends connect(store)(LitElement) {
 
   private _reduceEmptyLines = true;
 
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener('message', this._handlePostMessagesBound);
+  }
+
   connectedCallback(): void {
     super.connectedCallback();
+    window.addEventListener('message', this._handlePostMessagesBound);
 
     this.updateComplete.then(() => {
       requestAnimationFrame(() => {
@@ -128,10 +157,58 @@ export class FormView extends connect(store)(LitElement) {
     this._updateTokenValues();
   }
 
+  public _fillFormFromTokens(tokenValues: TokenValueDTO = this._tokensValuesFromSCMInputBox) {
+    console.log("supercalifragilisticexpialidocious")
+    this._formItems.forEach((e) => {
+      const rawValue = tokenValues[e.dataset.name as string];
+      if (rawValue) {
+        const token = this._tokens.find((t) => t.name === e.dataset.name);
+        if (token) {
+          switch (token.type) {
+            case 'enum':
+              e.value = String(rawValue);
+              break;
+            case 'text':
+              e.value = String(rawValue);
+              break;
+            case 'boolean':
+              if (Array.isArray(rawValue) && rawValue[0]) {
+                e.value = rawValue[0];
+              } else {
+                e.value = '';
+              }
+              break;
+          }
+          e.blur();
+          e.focus();
+        }
+      }
+    });
+    if (tokenValues === this._tokensValuesFromSCMInputBox)
+      this._tokensValuesFromSCMInputBox = {};
+  }
+  private _handlePostMessagesBound = this._handlePostMessages.bind(this);
+
+
   private _handleRepositoryChange(ev: CustomEvent<string>) {
     store.dispatch(recentCommitsRequest(ev.detail));
   }
 
+  private _handleCopyFromSCMInputBox() {
+
+    new Promise<TokenValueDTO>((resolve) => {
+      window.addEventListener('message', function (ev: MessageEvent<ReceivedMessageDO>) {
+        const {command, payload} = ev.data;
+        switch (command) {
+          case "copyFromSCMInputBox":
+            resolve(parseCommitMessage(payload as string));
+
+            break;
+        }
+      }, {once: true});
+      store.dispatch(copyFromSCMInputBox(''));
+    }).then(this._fillFormFromTokens.bind(this));
+  }
   private _handleSuccessButtonClick() {
     const compiler = new TemplateCompiler(
       this._dynamicTemplate,
@@ -233,6 +310,12 @@ export class FormView extends connect(store)(LitElement) {
         @cme-change=${this._handleRepositoryChange}
       ></cme-repo-selector>
       <div class="buttons">
+        <vscode-button
+           id="copy-scm-buttom-form"
+           @click=${this._handleCopyFromSCMInputBox}
+           secondary
+            >Copy from SCM InputBox</vscode-button
+        >
         <vscode-button
           id="success-button-form"
           @click="${this._handleSuccessButtonClick}"

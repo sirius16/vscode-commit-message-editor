@@ -2,6 +2,7 @@ import {Middleware} from '@reduxjs/toolkit';
 import {
   CLOSE_TAB,
   CONFIRM_AMEND,
+  COPY_FROM_SCM_INPUTBOX,
   COPY_TO_SCM_INPUT_BOX,
   IMPORT_CONFIG,
   RECENT_COMMITS_REQUEST,
@@ -31,6 +32,13 @@ export const postMessageDispatcher: Middleware = (_) => (next) => (action) => {
         // TODO: rename
         command: 'copyFromExtensionMessageBox',
         payload,
+      });
+      break;
+    case COPY_FROM_SCM_INPUTBOX:
+      debugger
+      if (payload === '')
+      vscode.postMessage({
+        command: 'copyToExtensionMessageBox',
       });
       break;
     case CONFIRM_AMEND:
