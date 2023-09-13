@@ -37,6 +37,7 @@ export const createInitialState = (): RootState => ({
       tabSize: 4,
       useTabs: false,
     },
+    gitBranchTaskNames: {},
   },
   shareableConfig: {
     dynamicTemplate: [],
@@ -55,6 +56,7 @@ export const createInitialState = (): RootState => ({
   numberOfRepositories: 0,
   selectedRepositoryPath: '',
   availableRepositories: [],
+
 });
 
 const initialState = createInitialState();

@@ -134,6 +134,7 @@ const createConfig = (): ExtensionConfig => ({
     showRecentCommits: true,
     saveAndClose: true,
   },
+  gitBranchTaskNames: {}
 });
 
 describe('cme-form-view', () => {

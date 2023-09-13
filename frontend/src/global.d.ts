@@ -20,6 +20,7 @@ declare global {
     | 'importConfig'
     | 'exportConfig'
     | 'loadCurrentConfig'
+    | 'getGitBranchName'
     | 'saveToSettings'
     | 'openConfigurationPage'
     | 'copyToExtensionMessageBox';
@@ -36,6 +37,7 @@ declare global {
     | 'receiveConfig'
     | 'repositoryInfo'
     | 'receiveImportedConfig'
+    | 'receiveGitTaskName'
     | 'statusMessage'
     | 'loadCurrentConfig';
 
@@ -81,6 +83,7 @@ declare global {
 
   type DefaultViewConfig = 'text' | 'form';
   type VisibleViewsConfig = 'text' | 'form' | 'both';
+  type BranchTaskNames = {[branchName: string]: string;}
 
   interface ExtensionConfig {
     confirmAmend: boolean;
@@ -100,6 +103,7 @@ declare global {
       rulers: number[];
       visibleLines: number;
     };
+    gitBranchTaskNames: BranchTaskNames;
   }
 
   type ShareableConfig = Pick<

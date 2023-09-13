@@ -309,6 +309,13 @@
           "type": "boolean",
           "description": "Close commit message editor tab after saving",
           "default": false
+        },
+        "commit-message-editor.gitBranchTaskNames": {
+          "type": "object",
+          "description": "Task names corresponding to git branches",
+          "default": {},
+          "scope": "window",
+          "items": {"type": "string"}
         }
       }
     }

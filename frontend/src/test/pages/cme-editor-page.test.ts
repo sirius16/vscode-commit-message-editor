@@ -102,6 +102,7 @@ describe('cme-editor-page', () => {
               tabSize: 4,
               useTabs: false,
             },
+            gitBranchTaskNames: {}
           } as ExtensionConfig,
         },
         window.origin
@@ -150,6 +151,7 @@ describe('cme-editor-page', () => {
               tabSize: 4,
               useTabs: false,
             },
+            gitBranchTaskNames: {}
           } as ExtensionConfig,
         },
         window.origin

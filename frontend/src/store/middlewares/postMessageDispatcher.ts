@@ -6,6 +6,7 @@ import {
   COPY_TO_SCM_INPUT_BOX,
   IMPORT_CONFIG,
   RECENT_COMMITS_REQUEST,
+  GET_GIT_BRANCH_NAME
 } from '../actions';
 import {getAPI} from '../../utils/VSCodeAPIService';
 
@@ -32,6 +33,11 @@ export const postMessageDispatcher: Middleware = (_) => (next) => (action) => {
         // TODO: rename
         command: 'copyFromExtensionMessageBox',
         payload,
+      });
+      break;
+    case GET_GIT_BRANCH_NAME:
+      vscode.postMessage({
+        command: 'getGitBranchName',
       });
       break;
     case COPY_FROM_SCM_INPUTBOX:

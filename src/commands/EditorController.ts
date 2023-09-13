@@ -118,6 +118,7 @@ export default class EditorController {
     const { command, payload } = data;
 
     switch (command) {
+
       // TODO: rename
       case 'copyFromExtensionMessageBox':
         const { commitMessage, selectedRepositoryPath } = payload;
@@ -125,6 +126,9 @@ export default class EditorController {
         break;
       case 'copyToExtensionMessageBox':
         this._ui?.sendSCMInputBoxValue(this._git.getSCMInputBoxMessage());
+        break;
+      case 'getGitBranchName':
+        this._ui?.sendGitBranchName(this._git.getBranchName());
         break;
       case 'closeTab':
         this._primaryEditorPanel?.dispose();

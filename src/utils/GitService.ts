@@ -123,6 +123,24 @@ class GitService {
     }
   }
 
+  public getBranchName(repositoryPath = ''): string {
+    let repo: Repository | undefined;
+
+    if (repositoryPath !== '') {
+      repo = this.getRepositoryByPath(repositoryPath);
+    }
+
+    if (!repo) {
+      repo = this.getSelectedRepository();
+    }
+
+    if (repo) {
+      return repo.state.HEAD?.name || '';
+    } else {
+      return '';
+    }
+  }
+
 
   public showCOMMIT_EDITMSG(repositoryPath = ''): void {
 

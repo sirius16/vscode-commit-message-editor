@@ -13,7 +13,7 @@ import {
   updateTokenValues,
   recentCommitsRequest,
   copyFromSCMInputBox,
-} from '../../store/actions';
+  getGitBranchName} from '../../store/actions';
 import {triggerInputboxRerender} from '../helpers';
 import '../cme-repo-selector';
 import FormBuilder from './FormBuilder';
@@ -61,6 +61,9 @@ export class FormView extends connect(store)(LitElement) {
 
   @queryAll('[data-name]')
   private _formItems!: NodeListOf<VscodeInputbox>;
+
+  @query('[data-name="task"]')
+  private _taskInput!: VscodeInputbox;
 
   @state()
   private _saveAndClose = false;
@@ -179,8 +182,8 @@ export class FormView extends connect(store)(LitElement) {
               }
               break;
           }
-          e.blur();
-          e.focus();
+          e.dispatchEvent(new CustomEvent('vsc-change'));
+          e.dispatchEvent(new CustomEvent('vsc-input'));
         }
       }
     });
@@ -209,6 +212,30 @@ export class FormView extends connect(store)(LitElement) {
       store.dispatch(copyFromSCMInputBox(''));
     }).then(this._fillFormFromTokens.bind(this));
   }
+
+  private _handleGetGitBranchTask() {
+    // get current git branch
+    new Promise<string>((resolve) => {
+      window.addEventListener('message', function (ev: MessageEvent<ReceivedMessageDO>) {
+        const {command, payload} = ev.data;
+        switch (command) {
+          case "receiveGitTaskName":
+            resolve(payload as string);
+
+            break;
+        }
+      }, {once: true});
+      store.dispatch(getGitBranchName());
+    }).then((taskName) => {
+
+      // fill task input
+      this._taskInput.value = taskName;
+      this._taskInput.dispatchEvent(new CustomEvent('vsc-change'));
+      this._taskInput.dispatchEvent(new CustomEvent('vsc-input'));
+    });
+  }
+
+
   private _handleSuccessButtonClick() {
     const compiler = new TemplateCompiler(
       this._dynamicTemplate,
@@ -315,6 +342,12 @@ export class FormView extends connect(store)(LitElement) {
            @click=${this._handleCopyFromSCMInputBox}
            secondary
             >Copy from SCM InputBox</vscode-button
+        >
+        <vscode-button
+          id="get-git-branch-task"
+          @click=${this._handleGetGitBranchTask}
+          secondary
+          >Get Git Branch Task</vscode-button
         >
         <vscode-button
           id="success-button-form"

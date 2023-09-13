@@ -11,6 +11,14 @@ export default class UiApi {
     );
   }
 
+  sendGitBranchName(branchName: string) {
+    // get the task name from settings
+    const taskName = vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames').get<string>(branchName, '<No Task Name>');
+    this._webView.postMessage(
+      createPostMessage("receiveGitTaskName", taskName)
+    );
+  }
+
   sendRepositoryInfo(info: {
     numberOfRepositories: number;
     selectedRepositoryPath: string | undefined;
