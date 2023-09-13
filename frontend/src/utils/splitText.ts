@@ -1,5 +1,6 @@
-import { VscodeButton } from '@bendera/vscode-webview-elements';
 import {VscodeInputbox} from '@bendera/vscode-webview-elements/dist/vscode-inputbox';
+import { FormView } from '../components/cme-form-view/cme-form-view';
+
 
 /**
  * Splits a string into chunks of 72 characters, preserving line breaks and punctuation.
@@ -103,22 +104,27 @@ type VscodeInputboxInputEvent = CustomEvent<string> & {target: VscodeInputbox};
 /**
  * This function is an event handler for the VscodeInputboxInputEvent. It takes in the event details and target element. If the target element has a data attribute called "name" with a value of "body", it calls the splitTextInInputBox function with the event details and target element as arguments.
  */
-export function splitTextEventHandler({target}: VscodeInputboxInputEvent) {
-  if (target.dataset.name === 'body') {
+export function splitTextEventHandler(this:FormView, {target,detail}: VscodeInputboxInputEvent) {
+  if (target.dataset.name === 'body' && detail) {
     // target.dataset.timeout && clearTimeout(Number(target.dataset.timeout));
     // target.dataset.timeout = String(setTimeout(splitTextInInputBox, 0, detail, target));
 
     // splitTextInInputBox(detail, target);
 
-    const input: HTMLTextAreaElement = <HTMLTextAreaElement>(
-           target?.shadowRoot?.querySelector?.('div > div.input-wrapper > textarea')
-         );
-         input.blur();
-         input.focus();
+    // const input: HTMLTextAreaElement = <HTMLTextAreaElement>(
+    //        target?.shadowRoot?.querySelector?.('div > div.input-wrapper > textarea')
+    //      );
+    //      input.blur();
+    //      input.focus();
 
+    target.dispatchEvent(new CustomEvent('vsc-change'));
+    // @ts-ignore
+    this._handleSuccessButtonClick();
+    debugger;
+    let z=4;
+    console.log(z++)
 
-
-    document.querySelector("body > cme-editor-page")?.shadowRoot?.querySelector("cme-editor")?.shadowRoot?.querySelector("#t1-p1 > cme-form-view")?.shadowRoot?.querySelector<VscodeButton>("#success-button-form")?.click();
+    // document.querySelector("body > cme-editor-page")?.shadowRoot?.querySelector("cme-editor")?.shadowRoot?.querySelector("#t1-p1 > cme-form-view")?.shadowRoot?.querySelector<VscodeButton>("#success-button-form")?.click();
   }
 }
 
