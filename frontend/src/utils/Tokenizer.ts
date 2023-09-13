@@ -27,7 +27,7 @@ export default function parseCommitMessage(message: string): TokenValueDTO {
   const {task, type, scope, description, body} = message.match(/(?:^(?<task>^.+-\s+)?(?<type>\w+)?(?:\((?<scope>[^)]+)\))?:(?: ?(?<description>[^\n\r]+)?)?)?\n*(?<body>[\s\S]+)?/)?.groups as unknown as CommitMessage;
   console.log({task, type, scope, description, body})
   return {
-    task: task? task.trim() : '',
+    task: task? task : '',
     type: type? type : '',
     scope: scope? scope : '',
     description: description? description.trim() : '',
