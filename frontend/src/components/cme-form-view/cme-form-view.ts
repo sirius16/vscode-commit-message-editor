@@ -25,17 +25,6 @@ import { TokenValueDTO } from './types';
 
 @customElement('cme-form-view')
 export class FormView extends connect(store)(LitElement) {
-    private _handlePostMessages(ev: MessageEvent<ReceivedMessageDO>) {
-      const {command, payload} = ev.data;
-      switch (command) {
-        case "copyFromSCMInputBox":
-          this._tokensValuesFromSCMInputBox = parseCommitMessage(payload as string);
-
-          // if (this._formItems.length)
-          //   this._setFormDataToTokens();
-          break;
-      }
-    }
   visibleCallback(): void {
     const inputs = this.shadowRoot?.querySelectorAll(
       'vscode-inputbox[multiline]'
@@ -90,21 +79,7 @@ export class FormView extends connect(store)(LitElement) {
   private _reduceEmptyLines = true;
 
 
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    window.removeEventListener('message', this._handlePostMessagesBound);
-  }
 
-  connectedCallback(): void {
-    super.connectedCallback();
-    window.addEventListener('message', this._handlePostMessagesBound);
-
-    this.updateComplete.then(() => {
-      requestAnimationFrame(() => {
-        this._updateTokenValues();
-      });
-    });
-  }
 
   stateChanged(state: RootState): void {
     const {config, tokenValues} = state;
@@ -190,7 +165,6 @@ export class FormView extends connect(store)(LitElement) {
     if (tokenValues === this._tokensValuesFromSCMInputBox)
       this._tokensValuesFromSCMInputBox = {};
   }
-  private _handlePostMessagesBound = this._handlePostMessages.bind(this);
 
 
   private _handleRepositoryChange(ev: CustomEvent<string>) {
