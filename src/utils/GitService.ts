@@ -185,7 +185,7 @@ class GitService {
 
   public async getRecentCommitMessages(
     limit: number = 32,
-    repositoryPath: string
+    repositoryPath: string = ''
   ) {
     let repo: Repository | undefined;
 
