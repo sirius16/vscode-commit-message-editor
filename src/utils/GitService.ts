@@ -211,6 +211,18 @@ class GitService {
 
     return this.getRepositoryRecentCommitMessages(repo, limit);
   }
+
+  public addVersionGitTag(tagName: string, commitHash: string) {
+    const repo = this.getSelectedRepository();
+
+    if (!repo) {
+      return;
+    }
+
+    debugger;
+    repo.tag(tagName, commitHash);
+  }
+
 }
 
 export default GitService;

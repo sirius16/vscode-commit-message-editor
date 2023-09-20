@@ -11,6 +11,7 @@ export enum Command {
   LoadTemplate = 'commitMessageEditor.loadTemplate',
   OpenEditor = 'commitMessageEditor.openEditor',
   OpenSettings = 'commitMessageEditor.openSettingsPage',
+  AddVersionGitTag = 'commitMessageEditor.addVersionGitTag',
 }
 
 export type ViewColumnKey =

@@ -17,6 +17,9 @@
 	"exclude": [
 		"node_modules",
     ".vscode-test",
-    "frontend"
+    // "frontend",
+    "frontend/{!src}",
+    "frontend/src/{!global.d.ts}",
 	]
+
 }
