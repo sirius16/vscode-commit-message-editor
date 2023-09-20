@@ -24,7 +24,13 @@
       "command": "commitMessageEditor.openEditor",
       "key": "ctrl+alt+g e",
       "mac": "cmd+alt+g e"
+    },
+    {
+      "command": "commitMessageEditor.addVersionGitTag",
+      "key": "ctrl+alt+g v",
+      "mac": "cmd+alt+g v"
     }
+
   ],
   "icon": "icon.png",
   "repository": {
@@ -60,6 +66,11 @@
         "command": "commitMessageEditor.openSettingsPage",
         "title": "Open Settings Page",
         "category": "Commit Message Editor"
+      },
+      {
+        "command": "commitMessageEditor.addVersionGitTag",
+        "title": "Add version tag",
+        "category": "Git"
       }
     ],
     "menus": {
@@ -314,7 +325,12 @@
           "type": "object",
           "description": "Task names corresponding to git branches",
           "default": {},
-          "scope": "window",
+          "items": {"type": "string"}
+        },
+        "commit-message-editor.gitTagVersionRegexes": {
+          "type": "object",
+          "description": "Regexes to extract version from git tags",
+          "default": {},
           "items": {"type": "string"}
         }
       }
