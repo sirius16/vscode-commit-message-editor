@@ -15,12 +15,9 @@ export class VersionGitTagCommand {
         continue;
       }
       const tag = title.replace(new RegExp(regexes[tagTemplate]), tagTemplate).replace(/\s/g, '-');
-      debugger
-      if (tag) {
+      if (commit.refNames?.some(ref => ref.includes(tag))) continue;
       this._git.addVersionGitTag(tag, commit.hash);
-      break;
-      }
-
+      break
       // ('gitTagVersionRegexes',)
     }
   }

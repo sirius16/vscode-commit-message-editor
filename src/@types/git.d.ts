@@ -51,6 +51,7 @@ export interface Commit {
 	readonly authorName?: string;
 	readonly authorEmail?: string;
 	readonly commitDate?: Date;
+  readonly refNames?: string[];
 }
 
 export interface Submodule {

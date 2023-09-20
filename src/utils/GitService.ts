@@ -219,8 +219,15 @@ class GitService {
       return;
     }
 
-    debugger;
-    repo.tag(tagName, commitHash);
+    // get path of git command on system
+    const gitPath = this.api?.git.path ?? "git"
+
+
+    // Use vscode built in terminal to create a tag at specific commit
+
+    const terminal = vscode.window.terminals.find(t => t.name === 'Git Tag') ?? vscode.window.createTerminal('Git Tag');
+    terminal.show();
+    terminal.sendText(`${gitPath} -C "${repo.rootUri.path}" tag '${tagName}' ${commitHash}`);
   }
 
 }
