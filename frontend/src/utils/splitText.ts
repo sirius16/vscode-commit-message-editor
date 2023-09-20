@@ -122,7 +122,7 @@ export function splitTextEventHandler(this:FormView, {target,detail}: VscodeInpu
     this._handleSuccessButtonClick();
     debugger;
     let z=4;
-    console.log(z++)
+    console.trace(z++)
 
     // document.querySelector("body > cme-editor-page")?.shadowRoot?.querySelector("cme-editor")?.shadowRoot?.querySelector("#t1-p1 > cme-form-view")?.shadowRoot?.querySelector<VscodeButton>("#success-button-form")?.click();
   }

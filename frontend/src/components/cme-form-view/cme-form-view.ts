@@ -161,7 +161,7 @@ export class FormView extends connect(store)(LitElement) {
   }
 
   public _fillFormFromTokens(tokenValues: TokenValueDTO = this._tokensValuesFromSCMInputBox) {
-    console.log("supercalifragilisticexpialidocious")
+    console.trace("supercalifragilisticexpialidocious")
     this._formItems.forEach((e) => {
       const rawValue = tokenValues[e.dataset.name as string];
       if (rawValue) {
