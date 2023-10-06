@@ -227,7 +227,7 @@ class GitService {
 
     const terminal = vscode.window.terminals.find(t => t.name === 'Git Tag') ?? vscode.window.createTerminal('Git Tag');
     terminal.show();
-    terminal.sendText(`${gitPath} -C "${repo.rootUri.path}" tag '${tagName}' ${commitHash}`);
+    terminal.sendText(`${gitPath} -C "${repo.rootUri.path}" tag '${tagName}' ${commitHash} && ${gitPath} -C "${repo.rootUri.path}" push origin '${tagName}'`);
   }
 
 }
