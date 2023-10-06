@@ -7,7 +7,7 @@ import { Command } from './definitions';
 import Logger from './utils/Logger';
 import { splitLine } from '../frontend/src/utils/splitText';
 import { VersionGitTagCommand } from './commands/VersionGitTagCommand';
-import { SwitchToTerminalByNameCommand } from './SwitchToTerminalByNameCommand';
+import { SwitchToTerminalByNameCommand } from './commands/SwitchToTerminalByNameCommand';
 export async function activate(context: vscode.ExtensionContext) {
   const logger = new Logger();
   const git = new GitService();
