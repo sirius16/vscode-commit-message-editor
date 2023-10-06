@@ -7,6 +7,7 @@ import { Command } from './definitions';
 import Logger from './utils/Logger';
 import { splitLine } from '../frontend/src/utils/splitText';
 import { VersionGitTagCommand } from './commands/VersionGitTagCommand';
+import { SwitchToTerminalByNameCommand } from './SwitchToTerminalByNameCommand';
 export async function activate(context: vscode.ExtensionContext) {
   const logger = new Logger();
   const git = new GitService();
@@ -20,6 +21,8 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   const versionGitTagCommand = new VersionGitTagCommand(git)
+
+  const switchToTerminalByNameCommand = new SwitchToTerminalByNameCommand();
 
 
   context.subscriptions.push(
@@ -53,6 +56,13 @@ export async function activate(context: vscode.ExtensionContext) {
       versionGitTagCommand
     )
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.SwitchToTerminalByName,
+      switchToTerminalByNameCommand.run,
+      switchToTerminalByNameCommand
+    ))
 
 
   vscode.languages.registerDocumentFormattingEditProvider('git-commit',{

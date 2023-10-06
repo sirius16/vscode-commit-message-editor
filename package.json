@@ -71,6 +71,11 @@
         "command": "commitMessageEditor.addVersionGitTag",
         "title": "Add version tag",
         "category": "Git"
+      },
+      {
+        "command": "workbench.action.terminal.switchToNamedTerminal",
+        "title": "Switch to Terminal by name",
+        "category": "Terminal"
       }
     ],
     "menus": {
