@@ -62,7 +62,15 @@ export async function activate(context: vscode.ExtensionContext) {
       Command.SwitchToTerminalByName,
       switchToTerminalByNameCommand.run,
       switchToTerminalByNameCommand
-    ))
+    ));
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.WriteToTerminalByName,
+      switchToTerminalByNameCommand.send,
+      switchToTerminalByNameCommand
+    ));
+
 
 
   vscode.languages.registerDocumentFormattingEditProvider('git-commit',{

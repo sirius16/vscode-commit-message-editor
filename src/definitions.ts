@@ -12,7 +12,8 @@ export enum Command {
   OpenEditor = 'commitMessageEditor.openEditor',
   OpenSettings = 'commitMessageEditor.openSettingsPage',
   AddVersionGitTag = 'commitMessageEditor.addVersionGitTag',
-  SwitchToTerminalByName = 'workbench.action.terminal.switchToNamedTerminal'
+  SwitchToTerminalByName = 'workbench.action.terminal.switchToNamedTerminal',
+  WriteToTerminalByName = 'workbench.action.terminal.sendSequenceToNamedTerminal'
 }
 
 export type ViewColumnKey =
