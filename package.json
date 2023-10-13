@@ -22,15 +22,19 @@
   "keybindings": [
     {
       "command": "commitMessageEditor.openEditor",
-      "key": "ctrl+alt+g e",
-      "mac": "cmd+alt+g e"
+      "windows": "win+shift+g e",
+      "mac": "cmd+shift+g e"
     },
     {
       "command": "commitMessageEditor.addVersionGitTag",
-      "key": "ctrl+alt+g v",
-      "mac": "cmd+alt+g v"
+      "windows": "win+shift+g v",
+      "mac": "cmd+shift+g v"
+    },
+    {
+      "command": "workbench.action.terminal.switchToNamedTerminal",
+      "windows": "win+shift+g t",
+      "mac": "cmd+shift+g t"
     }
-
   ],
   "icon": "icon.png",
   "repository": {
