@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import GitService from '../utils/GitService';
+import { execSync } from 'node:child_process';
 
 // import {TagVersionRegexes} from '../frontend/src/global'
 export class VersionGitTagCommand {
   constructor(private _git: GitService) { }
 
   async run() {
-    const commits = await this._git.getRecentCommitMessages();
+    const numCommits = this._git.getNumberOfCommits();
+    debugger
+    const commits = await this._git.getRecentCommitMessages(numCommits);
     for (const commit of commits) {
       const [title,] = commit.message.split('\n');
       const regexes = vscode.workspace.getConfiguration('commit-message-editor').get<TagVersionRegexes>('gitTagVersionRegexes', {});

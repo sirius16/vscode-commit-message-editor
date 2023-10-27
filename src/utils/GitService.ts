@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { GitExtension, API, Repository, APIState } from '../@types/git';
+import { execSync } from 'node:child_process';
 
 export type RepositoryChangeCallback = (repositoryInfo: {
   numberOfRepositories: number;
@@ -228,6 +229,25 @@ class GitService {
     const terminal = vscode.window.terminals.find(t => t.name === 'Git Tag') ?? vscode.window.createTerminal('Git Tag');
     terminal.show();
     terminal.sendText(`${gitPath} -C "${repo.rootUri.path}" tag '${tagName}' ${commitHash} && ${gitPath} -C "${repo.rootUri.path}" push origin '${tagName}'`);
+  }
+
+  public getNumberOfCommits(repositoryPath: string = ''): number {
+    let repo: Repository | undefined;
+
+    if (repositoryPath === '') {
+      repo = this.getSelectedRepository();
+    } else {
+      repo = this.getRepositoryByPath(repositoryPath);
+    }
+
+    if (!repo) {
+      return 0;
+    }
+
+    const gitPath = this.api?.git.path ?? "git"
+
+
+    return Number(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --count HEAD`).toString().trim());
   }
 
 }
