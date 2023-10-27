@@ -22,19 +22,27 @@
   "keybindings": [
     {
       "command": "commitMessageEditor.openEditor",
-      "windows": "win+shift+g e",
-      "mac": "cmd+shift+g e"
+      "windows": "shift+win+g e",
+      "mac": "shift+cmd+g e"
     },
     {
       "command": "commitMessageEditor.addVersionGitTag",
-      "windows": "win+shift+g v",
-      "mac": "cmd+shift+g v"
+      "windows": "shift+win+g v",
+      "mac": "shift+cmd+g v"
     },
     {
       "command": "workbench.action.terminal.switchToNamedTerminal",
-      "windows": "win+shift+g t",
-      "mac": "cmd+shift+g t"
-    }
+      "windows": "ctrl+`",
+      "mac": "cmd+`"
+    },
+    {
+      "command": "workbench.action.terminal.sendSequenceToNamedTerminal",
+      "args": {
+        "text": "code $(mktemp)"
+      },
+      "mac": "shift+cmd+g t",
+      "windows": "shift+win+g t"
+  }
   ],
   "icon": "icon.png",
   "repository": {
