@@ -135,7 +135,7 @@ const createConfig = (): ExtensionConfig => ({
     saveAndClose: true,
   },
   gitBranchTaskNames: {},
-  gitTagVersionRegexes: {},
+  gitTagVersion: {},
 });
 
 describe('cme-form-view', () => {

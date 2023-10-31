@@ -84,7 +84,7 @@ declare global {
   type DefaultViewConfig = 'text' | 'form';
   type VisibleViewsConfig = 'text' | 'form' | 'both';
   type BranchTaskNames = {[branchName: string]: string;}
-  type TagVersionRegexes = {[tagName: string]: string | RegExp;}
+  type TagVersion = {[tagName: string]: {prefix: string, body: string | RegExp, description?: string, files: string[];}};
 
   interface ExtensionConfig {
     confirmAmend: boolean;
@@ -105,7 +105,7 @@ declare global {
       visibleLines: number;
     };
     gitBranchTaskNames: BranchTaskNames;
-    gitTagVersionRegexes: TagVersionRegexes;
+    gitTagVersion: TagVersion;
   }
 
   type ShareableConfig = Pick<

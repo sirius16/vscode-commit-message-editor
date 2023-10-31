@@ -344,14 +344,43 @@
           "default": {},
           "items": {"type": "string"}
         },
-        "commit-message-editor.gitTagVersionRegexes": {
+        "commit-message-editor.gitTagVersion": {
           "type": "object",
           "description": "Regexes to extract version from git tags",
           "default": {},
-          "items": {"type": "string"}
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "prefix": {
+                "type": "string",
+                "description": "Prefix for the snippet"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description for the snippet"
+              },
+              "body": {
+                "type": "string",
+                "description": "Body for the snippet/regex"
+              },
+              "files": {
+                "type": "array",
+                "description": "List of files to include in the snippet",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "prefix",
+              "body",
+              "files"
+            ]
+          }
         }
       }
     }
+
   },
   "scripts": {
     "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",

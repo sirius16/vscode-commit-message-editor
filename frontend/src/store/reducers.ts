@@ -38,7 +38,7 @@ export const createInitialState = (): RootState => ({
       useTabs: false,
     },
     gitBranchTaskNames: {},
-    gitTagVersionRegexes: {},
+    gitTagVersion: {},
   },
   shareableConfig: {
     dynamicTemplate: [],
