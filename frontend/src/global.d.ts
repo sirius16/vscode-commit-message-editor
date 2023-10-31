@@ -120,4 +120,14 @@ declare global {
   }
 
   function acquireVsCodeApi(): VSCodeAPI;
+
+  type semverRegexMatchGroup = RegExpExecArray & {groups: {
+    version: string;
+    major: string;
+    minor: string;
+    patch: string;
+    prerelease: string;
+    build: string;
+  }, index: number, input: string, length: number,[index: number]: string}
 }
+

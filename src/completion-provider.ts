@@ -3,15 +3,6 @@ import { semverGroupsReplace, semverRegex } from './commands/VersionGitTagComman
 import GitService from './utils/GitService';
 import { Command } from './definitions';
 
-type semverRegexMatchGroup = RegExpExecArray & {groups: {
-  version: string;
-  major: string;
-  minor: string;
-  patch: string;
-  prerelease: string;
-  build: string;
-}, index: number, input: string, length: number,[index: number]: string}
-
 const semverRegexp = new RegExp(semverRegex);
 
 export default class GitTagVersionCompletionProvider implements vscode.CompletionItemProvider {
