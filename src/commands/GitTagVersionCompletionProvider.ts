@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { semverGroupsReplace, semverRegex } from './commands/VersionGitTagCommand';
-import GitService from './utils/GitService';
-import { Command } from './definitions';
+import { semverGroupsReplace, semverRegex } from './VersionGitTagCommand';
+import GitService from '../utils/GitService';
+import { Command } from '../definitions';
 
 const semverRegexp = new RegExp(semverRegex);
 

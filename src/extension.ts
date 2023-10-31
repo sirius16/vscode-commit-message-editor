@@ -7,8 +7,8 @@ import { Command } from './definitions';
 import Logger from './utils/Logger';
 import VersionGitTagCommand from './commands/VersionGitTagCommand';
 import SwitchToTerminalByNameCommand from './commands/SwitchToTerminalByNameCommand';
-import GitTagVersionCompletionProvider from './completion-provider';
-import GitCommitFormattingEditProvider from './GitCommitFormattingEditProvider';
+import GitTagVersionCompletionProvider from './commands/GitTagVersionCompletionProvider';
+import GitCommitFormattingEditProvider from './commands/GitCommitFormattingEditProvider';
 
 
 export async function activate(context: vscode.ExtensionContext) {
