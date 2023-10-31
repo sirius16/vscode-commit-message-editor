@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { splitLine } from '../splitText';
+import { splitLine } from '../../frontend/dist/utils/splitText';
+
 
 export default class GitCommitFormattingEditProvider implements vscode.DocumentFormattingEditProvider {
   constructor() { }
