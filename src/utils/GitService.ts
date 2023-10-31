@@ -156,7 +156,7 @@ class GitService {
       const lastLine = doc.lineAt(doc.lineCount - 1);
       // this.logger.logObject({firstLine, lastLine,selection:new vscode.Selection(firstLine.range.start, lastLine.range.end)  })
       vscode.window.activeTextEditor?.revealRange(new vscode.Range(firstLine.range.start, lastLine.range.end));
-      (vscode.window.activeTextEditor as vscode.TextEditor).selection = new vscode.Selection(lastLine.lineNumber, lastLine.range.end.character, lastLine.lineNumber, lastLine.range.end.character);
+      vscode.window.activeTextEditor!.selection = new vscode.Selection(lastLine.lineNumber, lastLine.range.end.character, lastLine.lineNumber, lastLine.range.end.character);
 
       // this.logger.logObject(new vscode.Selection(firstLine.range.start, lastLine.range.end));
     });
