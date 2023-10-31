@@ -5,9 +5,11 @@ import SettingsPageController from './commands/SettingsPageController';
 import CopyFromScmInputBoxCommand from './commands/CopyFromScmInputBoxCommand';
 import { Command } from './definitions';
 import Logger from './utils/Logger';
-import { splitLine } from '../frontend/src/utils/splitText';
-import { VersionGitTagCommand } from './commands/VersionGitTagCommand';
-import { SwitchToTerminalByNameCommand } from './commands/SwitchToTerminalByNameCommand';
+import VersionGitTagCommand from './commands/VersionGitTagCommand';
+import SwitchToTerminalByNameCommand from './commands/SwitchToTerminalByNameCommand';
+import GitCommitFormattingEditProvider from './GitCommitFormattingEditProvider';
+
+
 export async function activate(context: vscode.ExtensionContext) {
   const logger = new Logger();
   const git = new GitService();
@@ -23,6 +25,8 @@ export async function activate(context: vscode.ExtensionContext) {
   const versionGitTagCommand = new VersionGitTagCommand(git)
 
   const switchToTerminalByNameCommand = new SwitchToTerminalByNameCommand();
+  const gitCommitFormattingEditProvider = new GitCommitFormattingEditProvider();
+
 
 
   context.subscriptions.push(
@@ -71,41 +75,7 @@ export async function activate(context: vscode.ExtensionContext) {
       switchToTerminalByNameCommand
     ));
 
-
-
-  vscode.languages.registerDocumentFormattingEditProvider('git-commit',{
-provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
-      const firstLine = document.lineAt(2);
-      let lastLine = document.lineAt(document.lineCount - 1);
-      let range = new vscode.Range(firstLine.range.start, lastLine.range.end);
-
-      // Set the last line to any line that starts with "# ------------------------"
-      for (let i = 0; i < lastLine.lineNumber; i++) {
-          const line = document.lineAt(i);
-          const lineText = line.text.trim();
-          if (lineText.startsWith("# ------------------------")) {
-              lastLine = line;
-              break;
-          }
-      }
-
-      // Format the lines above the last line
-      const formattedLines: string[] = [];
-      for (let i = firstLine.lineNumber; i <= lastLine.lineNumber; i++) {
-          const line = document.lineAt(i);
-          const lineText = line.text.trim();
-          if (lineText.startsWith("#")) {
-              formattedLines.push(line.text);
-          } else {
-              formattedLines.push(splitLine(line.text));
-          }
-      }
-
-      return [new vscode.TextEdit(range, (formattedLines.join("\n")))];
-    }
-
-
-  })
+  vscode.languages.registerDocumentFormattingEditProvider('git-commit',gitCommitFormattingEditProvider)
 
   logger.log('Extension has been activated');
 }

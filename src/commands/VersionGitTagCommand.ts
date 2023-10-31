@@ -1,9 +1,6 @@
 import * as vscode from 'vscode';
 import GitService from '../utils/GitService';
-import { execSync } from 'node:child_process';
-
-// import {TagVersionRegexes} from '../frontend/src/global'
-export class VersionGitTagCommand {
+export default class VersionGitTagCommand {
   constructor(private _git: GitService) { }
 
   async run() {

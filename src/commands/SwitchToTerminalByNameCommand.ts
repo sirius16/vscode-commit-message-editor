@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { basename } from 'path';
 
-export class SwitchToTerminalByNameCommand {
+export default class SwitchToTerminalByNameCommand {
 
   run(): void;
   run(name: string): void;
