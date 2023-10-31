@@ -250,6 +250,69 @@ class GitService {
     return Number(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --count HEAD`).toString().trim());
   }
 
+  public onlyUnstagedOrStagedChanges(files: vscode.Uri[], repositoryPath?: string): vscode.Uri[];
+  public onlyUnstagedOrStagedChanges(files: string[], repositoryPath?: string): string[];
+  public onlyUnstagedOrStagedChanges<T extends vscode.Uri | string>(files: T[], repositoryPath: string = ''): T[] {
+    let repo: Repository | undefined;
+
+    if (repositoryPath === '') {
+      repo = this.getSelectedRepository();
+    } else {
+      repo = this.getRepositoryByPath(repositoryPath);
+    }
+
+    if (!repo) {
+      return [];
+    }
+
+
+    return files.filter(file => repo!.state.workingTreeChanges.find(change => change.uri.path === (file instanceof vscode.Uri ? file.path : file)) || repo!.state.indexChanges.find(change => change.uri.path === (file instanceof vscode.Uri ? file.path : file)));
+  }
+
+  public async addFilesToStage(files: vscode.Uri[], repositoryPath?: string): Promise<void>;
+  public async addFilesToStage(files: string[], repositoryPath?: string): Promise<void>;
+  public async addFilesToStage(files: vscode.Uri[] | string[], repositoryPath: string = ''): Promise<void> {
+
+    let repo: Repository | undefined;
+
+    if (repositoryPath === '') {
+      repo = this.getSelectedRepository();
+    } else {
+      repo = this.getRepositoryByPath(repositoryPath);
+    }
+
+    if (!repo) {
+      return;
+    }
+
+    files = files.map(file => file instanceof vscode.Uri ? file.path : file);
+
+    repo.add(files);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await vscode.commands.executeCommand('gitlens.generateCommitMessage')
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const editor = vscode.window.activeTextEditor;
+
+    if (editor) {
+
+      editor.edit(editBuilder => {
+        const firstLine = editor.document.lineAt(0);
+        const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
+
+        editBuilder.replace(new vscode.Range(firstLine.range.start, lastLine.range.end), repo!.inputBox.value);
+      });
+      const firstLine = editor.document.lineAt(0);
+      const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
+
+      editor.revealRange(new vscode.Range(firstLine.range.start, lastLine.range.end));
+      editor.selection = new vscode.Selection(lastLine.lineNumber, lastLine.range.end.character, lastLine.lineNumber, lastLine.range.end.character);
+
+    }
+
+
+
+  }
+
 }
 
 export default GitService;

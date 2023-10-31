@@ -13,7 +13,8 @@ export enum Command {
   OpenSettings = 'commitMessageEditor.openSettingsPage',
   AddVersionGitTag = 'commitMessageEditor.addVersionGitTag',
   SwitchToTerminalByName = 'workbench.action.terminal.switchToNamedTerminal',
-  WriteToTerminalByName = 'workbench.action.terminal.sendSequenceToNamedTerminal'
+  WriteToTerminalByName = 'workbench.action.terminal.sendSequenceToNamedTerminal',
+  AddTagSnippet = 'commitMessageEditor.addTagSnippet',
 }
 
 export type ViewColumnKey =

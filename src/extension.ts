@@ -7,6 +7,7 @@ import { Command } from './definitions';
 import Logger from './utils/Logger';
 import VersionGitTagCommand from './commands/VersionGitTagCommand';
 import SwitchToTerminalByNameCommand from './commands/SwitchToTerminalByNameCommand';
+import GitTagVersionCompletionProvider from './completion-provider';
 import GitCommitFormattingEditProvider from './GitCommitFormattingEditProvider';
 
 
@@ -25,6 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const versionGitTagCommand = new VersionGitTagCommand(git)
 
   const switchToTerminalByNameCommand = new SwitchToTerminalByNameCommand();
+  const gitTagVersionCompletionProvider = new GitTagVersionCompletionProvider(git);
   const gitCommitFormattingEditProvider = new GitCommitFormattingEditProvider();
 
 
@@ -75,9 +77,23 @@ export async function activate(context: vscode.ExtensionContext) {
       switchToTerminalByNameCommand
     ));
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      Command.AddTagSnippet,
+      gitTagVersionCompletionProvider.addTagSnippet,
+      gitTagVersionCompletionProvider
+    ));
+
+
+
+
   vscode.languages.registerDocumentFormattingEditProvider('git-commit',gitCommitFormattingEditProvider)
+
+  vscode.languages.registerCompletionItemProvider('git-commit', gitTagVersionCompletionProvider, 'v');
 
   logger.log('Extension has been activated');
 }
+
+
 
 export function deactivate() {}
