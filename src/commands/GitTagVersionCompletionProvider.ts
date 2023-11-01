@@ -14,23 +14,16 @@ export default class GitTagVersionCompletionProvider implements vscode.Completio
         const completionItems = (await Promise.all(Object.keys(gitTagVersion).map(async key => {
             const snippet = gitTagVersion[key];
             const files = (await this._git.onlyUnstagedOrStagedChanges(snippet.files));
-            if (!files.length || files[0] !== snippet.files[0]) {
+            if (!files.length || files[0] !== (await vscode.workspace.findFiles(snippet.files[0]))[0].path) {
               return;
             }
 
             const completionItem = new vscode.CompletionItem(snippet.prefix, vscode.CompletionItemKind.Method);
             // search files in workspace for the version number
-            console.log(await vscode.workspace.findFiles("**","**/node_modules/**"));
-            console.log(snippet.files.join(','),await vscode.workspace.findFiles(snippet.files.join(','),"**/node_modules/**"));
-            const {groups: {version=''} = {}} = await vscode.workspace.findFiles(files[0], '**/node_modules/**')
-            .then(async ([file]) => {
-              const doc = await vscode.workspace.openTextDocument(file);
-              const match = doc.getText().match(semverRegexp);
-              if (match) {
-                return match as semverRegexMatchGroup
-              }
-            }) ?? {};
-
+            console.log(`{${snippet.files.join(', ')}}`,await vscode.workspace.findFiles(`{${ snippet.files.join(', ') }}`,"**/node_modules/**"),files);
+            const doc = await vscode.workspace.openTextDocument(files[0]);
+            const match = doc.getText().match(semverRegexp);
+            const version = (<semverRegexMatchGroup>match)?.groups?.version;
             if (!version) {
               return;
             }
@@ -57,7 +50,7 @@ export default class GitTagVersionCompletionProvider implements vscode.Completio
       const gitTagVersion = config.get<TagVersion>('gitTagVersion',{});
       const snippet = gitTagVersion[key];
 
-      vscode.workspace.findFiles((await this._git.onlyUnstagedOrStagedChanges(snippet.files)).join(","), '**/node_modules/**').then(this._git.addFilesToStage.bind(this._git));
+      this._git.addFilesToStage(await this._git.onlyUnstagedOrStagedChanges(snippet.files))
       // git add snippet.files
       // this._git.addFilesToStage(snippet.files);
 
