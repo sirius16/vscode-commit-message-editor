@@ -271,7 +271,7 @@ class GitService {
       if (file instanceof vscode.Uri) {
         filteredFiles.push(file as T);
       } else {
-        const foundFiles = await vscode.workspace.findFiles(file, '**/node_modules/**');
+        const foundFiles = await vscode.workspace.findFiles(file.replace(/\/\**$/g, '/**'), '**/node_modules/**');
         filteredFiles.push(...foundFiles.map(foundFile => foundFile.path) as T[]);
       }
     }
