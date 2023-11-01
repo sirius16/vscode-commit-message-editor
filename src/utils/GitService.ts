@@ -306,8 +306,19 @@ class GitService {
       if (editor.document.languageId !== 'git-commit') return;
       repo!.inputBox.value = editor.document.getText()
 
-    await vscode.commands.executeCommand('gitlens.generateCommitMessage')
+      const editorText = editor.document.getText();
 
+
+      await vscode.commands.executeCommand('gitlens.generateCommitMessage')
+
+      await new Promise<void>(resolve => {
+        const interval = setInterval(() => {
+          if (repo!.inputBox.value !== editorText) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 100);
+      })
 
       editor.edit(editBuilder => {
         const firstLine = editor.document.lineAt(0);
@@ -320,6 +331,8 @@ class GitService {
 
       editor.revealRange(new vscode.Range(firstLine.range.start, lastLine.range.end));
       editor.selection = new vscode.Selection(lastLine.lineNumber, lastLine.range.end.character, lastLine.lineNumber, lastLine.range.end.character);
+
+      await vscode.commands.executeCommand('editor.action.formatDocument');
 
     }
 
