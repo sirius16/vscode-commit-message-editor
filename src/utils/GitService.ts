@@ -297,13 +297,17 @@ class GitService {
 
     files = files.map(file => file instanceof vscode.Uri ? file.path : file);
 
-    repo.add(files);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    await vscode.commands.executeCommand('gitlens.generateCommitMessage')
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const editor = vscode.window.activeTextEditor;
 
+    await repo.revert([]);
+    await repo.add(files);
+
+    const editor = vscode.window.activeTextEditor;
     if (editor) {
+      if (editor.document.languageId !== 'git-commit') return;
+      repo!.inputBox.value = editor.document.getText()
+
+    await vscode.commands.executeCommand('gitlens.generateCommitMessage')
+
 
       editor.edit(editBuilder => {
         const firstLine = editor.document.lineAt(0);
