@@ -13,7 +13,7 @@ export default class GitTagVersionCompletionProvider implements vscode.Completio
 
         const completionItems = (await Promise.all(Object.keys(gitTagVersion).map(async key => {
             const snippet = gitTagVersion[key];
-            const files = this._git.onlyUnstagedOrStagedChanges(snippet.files);
+            const files = (await this._git.onlyUnstagedOrStagedChanges(snippet.files));
             if (!files.length || files[0] !== snippet.files[0]) {
               return;
             }
@@ -52,12 +52,12 @@ export default class GitTagVersionCompletionProvider implements vscode.Completio
         return completionItems;
     }
 
-    addTagSnippet(key: string) {
+    async addTagSnippet(key: string) {
       const config = vscode.workspace.getConfiguration('commit-message-editor');
       const gitTagVersion = config.get<TagVersion>('gitTagVersion',{});
       const snippet = gitTagVersion[key];
 
-      vscode.workspace.findFiles(this._git.onlyUnstagedOrStagedChanges(snippet.files).join(","), '**/node_modules/**').then(this._git.addFilesToStage.bind(this._git));
+      vscode.workspace.findFiles((await this._git.onlyUnstagedOrStagedChanges(snippet.files)).join(","), '**/node_modules/**').then(this._git.addFilesToStage.bind(this._git));
       // git add snippet.files
       // this._git.addFilesToStage(snippet.files);
 

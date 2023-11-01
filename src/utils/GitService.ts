@@ -250,9 +250,9 @@ class GitService {
     return Number(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --count HEAD`).toString().trim());
   }
 
-  public onlyUnstagedOrStagedChanges(files: vscode.Uri[], repositoryPath?: string): vscode.Uri[];
-  public onlyUnstagedOrStagedChanges(files: string[], repositoryPath?: string): string[];
-  public onlyUnstagedOrStagedChanges<T extends vscode.Uri | string>(files: T[], repositoryPath: string = ''): T[] {
+  public async onlyUnstagedOrStagedChanges(files: vscode.Uri[], repositoryPath?: string): Promise<vscode.Uri[]>;
+  public async onlyUnstagedOrStagedChanges(files: string[], repositoryPath?: string): Promise<string[]>;
+  public async onlyUnstagedOrStagedChanges<T extends vscode.Uri | string>(files: T[], repositoryPath: string = ''): Promise<T[]> {
     let repo: Repository | undefined;
 
     if (repositoryPath === '') {
@@ -265,8 +265,18 @@ class GitService {
       return [];
     }
 
+    const filteredFiles: T[] = [];
 
-    return files.filter(file => repo!.state.workingTreeChanges.find(change => change.uri.path === (file instanceof vscode.Uri ? file.path : file)) || repo!.state.indexChanges.find(change => change.uri.path === (file instanceof vscode.Uri ? file.path : file)));
+    for (const file of files) {
+      if (file instanceof vscode.Uri) {
+        filteredFiles.push(file as T);
+      } else {
+        const foundFiles = await vscode.workspace.findFiles(file, '**/node_modules/**');
+        filteredFiles.push(...foundFiles.map(foundFile => foundFile.path) as T[]);
+      }
+    }
+
+    return filteredFiles.filter(file => repo!.state.workingTreeChanges.find(change => change.uri.path === (file instanceof vscode.Uri ? file.path : file)) || repo!.state.indexChanges.find(change => change.uri.path === (file instanceof vscode.Uri ? file.path : file)));
   }
 
   public async addFilesToStage(files: vscode.Uri[], repositoryPath?: string): Promise<void>;
