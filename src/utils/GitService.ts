@@ -29,8 +29,26 @@ class GitService {
 
     this.isGitAvailable = true;
     this.api = this.gitExtension.exports.getAPI(1);
+
+    if (!this.api) {
+      return;
+    }
+
+    this.api.onDidOpenRepository((repository: Repository) => {
+     this.getAllCommits(repository.rootUri.path);
+    }, this);
+
+    this.api.onDidPublish(({ repository, branch }: PublishEvent) => {
+      this.getAllCommits(repository.rootUri.path);
+    });
+
+
+
   }
 
+  get commits() {
+    return this.getAllCommits();
+  }
   private getSelectedRepository(): Repository | undefined {
     const selected = this.api?.repositories.find(
       (repo: Repository) => repo.ui.selected
@@ -247,7 +265,31 @@ class GitService {
     const gitPath = this.api?.git.path ?? "git"
 
 
-    return Number(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --count HEAD`).toString().trim());
+    return Number(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all --count `).toString().trim());
+  }
+
+  public async getAllCommits(repositoryPath: string = ''): Promise<Commit[]> {
+    let repo: Repository | undefined;
+
+    if (repositoryPath === '') {
+      repo = this.getSelectedRepository();
+    } else {
+      repo = this.getRepositoryByPath(repositoryPath);
+    }
+
+    if (!repo) {
+      return [];
+    }
+
+    if (this.getNumberOfCommits(repositoryPath) <= (this.allCommits[repo.rootUri.path]??=[]).length) return this.allCommits[repo.rootUri.path]
+    const gitPath = this.api?.git.path ?? "git"
+
+    console.log('getAllCommits', repo.rootUri.path);
+    return Promise.all(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n').map(repo.getCommit.bind(repo))).then(commits => {
+      this.allCommits[repo!.rootUri.path] = commits;
+      console.log('getAllCommits done', repo!.rootUri.path, commits.length)
+      return commits;
+    });
   }
 
   public async onlyUnstagedOrStagedChanges(files: vscode.Uri[], repositoryPath?: string): Promise<vscode.Uri[]>;

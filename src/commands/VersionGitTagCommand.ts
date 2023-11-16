@@ -8,10 +8,7 @@ export default class VersionGitTagCommand {
   constructor(private _git: GitService) { }
 
   async run() {
-    const numCommits = this._git.getNumberOfCommits();
-    debugger
-    const commits = await this._git.getRecentCommitMessages(numCommits);
-    for (const commit of commits) {
+    for (const commit of await this._git.commits) {
       const [title,] = commit.message.split('\n');
       const regexes = vscode.workspace.getConfiguration('commit-message-editor').get<TagVersion>('gitTagVersion', {});
       const tagTemplate = Object.keys(regexes).find(key => new RegExp(regexes[key].body.toString().replace('<version>',semverRegex)).test(title));
