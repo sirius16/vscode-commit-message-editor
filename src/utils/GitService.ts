@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { GitExtension, API, Repository, APIState } from '../@types/git';
+import { GitExtension, API, Repository, APIState, Commit, PublishEvent } from '../@types/git';
 import { execSync } from 'node:child_process';
 
 export type RepositoryChangeCallback = (repositoryInfo: {
@@ -14,11 +14,16 @@ export interface RepositoryInfo {
   availableRepositories: string[];
 }
 
+type RepositoryCommits = {
+  [repositoryPath: string]: Commit[];
+};
+
 class GitService {
   private isGitAvailable: boolean = false;
   private gitExtension: vscode.Extension<GitExtension> | undefined;
   private api: API | undefined;
   private disposables: vscode.Disposable[] = [];
+  private allCommits: RepositoryCommits = {};
 
   constructor() {
     this.gitExtension = vscode.extensions.getExtension('vscode.git');
@@ -340,7 +345,7 @@ class GitService {
     files = files.map(file => file instanceof vscode.Uri ? file.path : file);
 
 
-    await repo.revert([]);
+    await this.unstageAllChanges(repositoryPath);
     await repo.add(files);
 
     const editor = vscode.window.activeTextEditor;
@@ -380,6 +385,22 @@ class GitService {
 
 
 
+  }
+
+  public async unstageAllChanges(repositoryPath: string = ''): Promise<void> {
+    let repo: Repository | undefined;
+
+    if (repositoryPath === '') {
+      repo = this.getSelectedRepository();
+    } else {
+      repo = this.getRepositoryByPath(repositoryPath);
+    }
+
+    if (!repo) {
+      return;
+    }
+
+    await repo.revert([]);
   }
 
 }
