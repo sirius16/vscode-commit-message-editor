@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { semverGroupsReplace, semverRegex } from './VersionGitTagCommand';
 import GitService from '../utils/GitService';
 import { Command } from '../definitions';
+import { basename } from 'path';
 
 const semverRegexp = new RegExp(semverRegex);
 type VersionParts<T extends string | number | undefined = string | number | undefined> = [major: T] | [major: T, minor: T] | [major: T, minor: T, patch: T];
@@ -55,16 +56,26 @@ constructor(private _git: GitService) { }
       const files = (await this._git.onlyUnstagedOrStagedChanges(snippet.files));
       if (version) {
         await this._git.unstageAllChanges();
-        const workspaceEdit = new vscode.WorkspaceEdit();
-        // edit version number in all files
-        await vscode.workspace.findFiles(`{${snippet.files}}`,"**/node_modules/**").then(async files_1 => Promise.all(files_1.filter(file => files.includes(file.path))
-          .map(async file => {
-          const doc = await vscode.workspace.openTextDocument(file);
-          const newVersion = doc.getText().replace(semverRegexp, version);
-          workspaceEdit.replace(doc.uri, new vscode.Range(0, 0, doc.lineCount, 0), newVersion);
-        }))
-        .then(() => vscode.workspace.applyEdit(workspaceEdit))
-        );
+        await new Promise<number>(resolve => {
+          let i = 0;
+          const workspaceEdit = new vscode.WorkspaceEdit();
+          const files_1 = files.filter(file => basename(file) === basename(snippet.files[0]));
+          // edit version number in all files
+          Promise.all(files_1
+            .map(async file => {
+          // vscode.workspace.findFiles(`{${snippet.files}}`,"**/node_modules/**").then(async files_1 => Promise.all(files_1.filter(file => files.includes(file.path))
+            // .map(async file => {
+            const doc = await vscode.workspace.openTextDocument(file);
+            const newVersion = doc.getText().replace(semverRegexp, version);
+            workspaceEdit.replace(doc.uri, new vscode.Range(0, 0, doc.lineCount, 0), newVersion);
+          }))
+          .then(() => vscode.workspace.applyEdit(workspaceEdit))
+          vscode.workspace.onDidSaveTextDocument(() => {
+            console.log('saved %d files out of %d (%s)',++i,files_1.length,Intl.NumberFormat('en-US',{style: 'percent',maximumFractionDigits: 2}).format(i / files_1.length));
+            if (i === files_1.length) resolve(i);
+          });
+
+        }).then(console.log,console.error);
       }
 
       this._git.addFilesToStage(files)
