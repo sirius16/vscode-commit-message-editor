@@ -15,7 +15,7 @@ export default class VersionGitTagCommand {
       if (!tagTemplate) {
         continue;
       }
-      const tag = title.replace(new RegExp(regexes[tagTemplate].body.toString().replace('<version>',semverRegex)), tagTemplate.replace(...semverGroupsReplace)).replace(/\s/g, '-');
+      const tag = title.replace(new RegExp(tagTemplate.replace('<version>',semverRegex)), tagTemplate.replace(...semverGroupsReplace)).replace(/\s/g, '-');
       if (commit.refNames?.some(ref => ref.includes(tag))) continue;
       this._git.addVersionGitTag(tag, commit.hash);
       break
