@@ -17,9 +17,10 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
+        "${workspaceFolder}/.vscode/Test.code-workspace",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--disable-extensions",
-        // "--enable-proposed-api",
+        "--enable-proposed-api",
       ],
       "sourceMaps": true,
       "outFiles": [
