@@ -8,16 +8,20 @@ export default class VersionGitTagCommand {
   constructor(private _git: GitService) { }
 
   async run() {
-    for (const commit of await this._git.commits) {
+    const commits = await this._git.commits;
+    for (const commit of commits) {
       const [title,] = commit.message.split('\n');
       const regexes = vscode.workspace.getConfiguration('commit-message-editor').get<TagVersion>('gitTagVersion', {});
       const tagTemplate = Object.keys(regexes).find(key => new RegExp(regexes[key].body.toString().replace('<version>',semverRegex)).test(title));
       if (!tagTemplate) {
         continue;
       }
-      const tag = title.replace(new RegExp(tagTemplate.replace('<version>',semverRegex)), tagTemplate.replace(...semverGroupsReplace)).replace(/\s/g, '-');
+      const tag = title.replace(new RegExp(regexes[tagTemplate].body.toString().replace('<version>',semverRegex)), tagTemplate.replace(...semverGroupsReplace)).replace(/\s/g, '-');
+        // .replace('<version>',semverRegex)), tagTemplate.replace(...semverGroupsReplace)).replace(/\s/g, '-');
       if (commit.refNames?.some(ref => ref.includes(tag))) continue;
       this._git.addVersionGitTag(tag, commit.hash);
+      commits.splice(commits.indexOf(commit), 1);
+
       break
       // ('gitTagVersion',)
     }
