@@ -40,11 +40,14 @@ class GitService {
     }
 
     this.api.onDidOpenRepository((repository: Repository) => {
-     this.getAllCommits(repository.rootUri.path);
+      this.getAllCommits(repository.rootUri.path);
     }, this);
 
     this.api.onDidPublish(({ repository, branch }: PublishEvent) => {
       this.getAllCommits(repository.rootUri.path);
+    });
+    this.api.repositories.forEach((repo: Repository) => {
+      this.getAllCommits(repo.rootUri.path);
     });
 
 
