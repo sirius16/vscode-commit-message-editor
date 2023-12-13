@@ -295,13 +295,14 @@ class GitService {
 
     logObject(repo.rootUri.path, 'getAllCommits');
     console.log('getAllCommits', repo.rootUri.path);
-    return Promise.all(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n').map((commitHash: string, index: number) => [commitHash, -index] as const)
-    .filter(([commitHash]) => !this.allCommits[repo!.rootUri.path]?.some(commit => commit.hash === commitHash))
-    .map(([commitHash, index]) => repo!.getCommit(commitHash).then(commit => [commit, index] as const)))
+    const commits = execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n');
+    return Promise.all(commits
+    .filter(commitHash => !this.allCommits[repo!.rootUri.path]?.some(commit => commit.hash === commitHash))
+    .map(commitHash => repo!.getCommit(commitHash)))
     // .map(repo.getCommit.bind(repo)))
-    .then(commits => {
-      this.allCommits[repo!.rootUri.path] = [...this.allCommits[repo!.rootUri.path].map((commit, index) => [commit, index] as const)??[], ...commits].
-      sort(([, indexA], [, indexB]) => Math.abs(indexA) - Math.abs(indexB) || indexA - indexB).
+    .then(commits_1 => {
+      this.allCommits[repo!.rootUri.path] = [...(this.allCommits[repo!.rootUri.path]??[]), ...commits_1].
+      sort(({hash: hash1}, {hash: hash2}) => commits.indexOf(hash1) - commits.indexOf(hash2));
       map(([commit]) => commit);
       logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
       console.log('getAllCommits done', repo!.rootUri.path, commits_1.length)
