@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { GitExtension, API, Repository, APIState, Commit, PublishEvent } from '../@types/git';
+import { GitExtension, API, Repository, Commit, PublishEvent } from '../@types/git';
 import { execSync } from 'node:child_process';
+import { logObject } from '../extension';
 
 export type RepositoryChangeCallback = (repositoryInfo: {
   numberOfRepositories: number;
@@ -292,6 +293,7 @@ class GitService {
     if (this.getNumberOfCommits(repositoryPath) <= (this.allCommits[repo.rootUri.path]??=[]).length) return this.allCommits[repo.rootUri.path]
     const gitPath = this.api?.git.path ?? "git"
 
+    logObject(repo.rootUri.path, 'getAllCommits');
     console.log('getAllCommits', repo.rootUri.path);
     return Promise.all(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n').map((commitHash: string, index: number) => [commitHash, -index] as const)
     .filter(([commitHash]) => !this.allCommits[repo!.rootUri.path]?.some(commit => commit.hash === commitHash))
@@ -301,7 +303,8 @@ class GitService {
       this.allCommits[repo!.rootUri.path] = [...this.allCommits[repo!.rootUri.path].map((commit, index) => [commit, index] as const)??[], ...commits].
       sort(([, indexA], [, indexB]) => Math.abs(indexA) - Math.abs(indexB) || indexA - indexB).
       map(([commit]) => commit);
-      console.log('getAllCommits done', repo!.rootUri.path, commits.length)
+      logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
+      console.log('getAllCommits done', repo!.rootUri.path, commits_1.length)
       return this.allCommits[repo!.rootUri.path];
     });
   }

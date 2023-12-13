@@ -3,6 +3,8 @@ import { semverGroupsReplace, semverRegex } from './VersionGitTagCommand';
 import GitService from '../utils/GitService';
 import { Command } from '../definitions';
 import { basename } from 'path';
+import { logObject } from '../extension';
+
 
 const semverRegexp = new RegExp(semverRegex);
 type VersionParts<T extends string | number | undefined = string | number | undefined> = [major: T] | [major: T, minor: T] | [major: T, minor: T, patch: T];
@@ -19,6 +21,7 @@ constructor(private _git: GitService) { }
 
             const completionItem = new vscode.CompletionItem(snippet.prefix, vscode.CompletionItemKind.Method);
             // search files in workspace for the version number
+            logObject([`{${snippet.files.join(', ')}}`,await vscode.workspace.findFiles(`{${ snippet.files.join(', ') }}`,"**/node_modules/**"),files])
             console.log(`{${snippet.files.join(', ')}}`,await vscode.workspace.findFiles(`{${ snippet.files.join(', ') }}`,"**/node_modules/**"),files);
             const doc = await vscode.workspace.openTextDocument(files[0]);
             const match = doc.getText().match(semverRegexp) as semverRegexMatchGroup | null;
@@ -71,6 +74,7 @@ constructor(private _git: GitService) { }
           }))
           .then(() => vscode.workspace.applyEdit(workspaceEdit))
           vscode.workspace.onDidSaveTextDocument(() => {
+            logObject(['saved %d files out of %d (%s)',i,files_1.length,Intl.NumberFormat('en-US',{style: 'percent',maximumFractionDigits: 2}).format(i / files_1.length)])
             console.log('saved %d files out of %d (%s)',++i,files_1.length,Intl.NumberFormat('en-US',{style: 'percent',maximumFractionDigits: 2}).format(i / files_1.length));
             if (i === files_1.length) resolve(i);
           });

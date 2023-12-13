@@ -13,6 +13,8 @@ import GitCommitFormattingEditProvider from './commands/GitCommitFormattingEditP
 
 export async function activate(context: vscode.ExtensionContext) {
   const logger = new Logger();
+  Object.assign(module.exports, { log: logger.log.bind(logger), logObject: logger.logObject.bind(logger) });
+
   const git = new GitService();
 
   const editorController = new EditorController(context, git, logger);
@@ -94,6 +96,9 @@ export async function activate(context: vscode.ExtensionContext) {
   logger.log('Extension has been activated');
 }
 
+export function log(message: string) {}
+
+export function logObject(obj: any, label = '') {}
 
 
 export function deactivate() {}
