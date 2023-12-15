@@ -302,8 +302,8 @@ class GitService {
     // .map(repo.getCommit.bind(repo)))
     .then(commits_1 => {
       this.allCommits[repo!.rootUri.path] = [...(this.allCommits[repo!.rootUri.path]??[]), ...commits_1].
-      sort(({hash: hash1}, {hash: hash2}) => commits.indexOf(hash1) - commits.indexOf(hash2));
-      map(([commit]) => commit);
+      sort(({hash: hash1}, {hash: hash2}) => commits.indexOf(hash1) - commits.indexOf(hash2))
+
       logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
       console.log('getAllCommits done', repo!.rootUri.path, commits_1.length)
       return this.allCommits[repo!.rootUri.path];
