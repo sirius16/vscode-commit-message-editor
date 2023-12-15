@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { GitExtension, API, Repository, Commit, PublishEvent } from '../@types/git';
 import { execSync } from 'node:child_process';
-import { logObject } from '../extension';
+import Logger from './Logger';
 
 export type RepositoryChangeCallback = (repositoryInfo: {
   numberOfRepositories: number;
@@ -26,7 +26,7 @@ class GitService {
   private disposables: vscode.Disposable[] = [];
   private allCommits: RepositoryCommits = {};
 
-  constructor() {
+  constructor(private _logger: Logger) {
     this.gitExtension = vscode.extensions.getExtension('vscode.git');
 
     if (!this.gitExtension) {
@@ -293,7 +293,7 @@ class GitService {
     if (this.getNumberOfCommits(repositoryPath) <= (this.allCommits[repo.rootUri.path]??=[]).length) return this.allCommits[repo.rootUri.path]
     const gitPath = this.api?.git.path ?? "git"
 
-    logObject(repo.rootUri.path, 'getAllCommits');
+    this._logger.logObject(repo.rootUri.path, 'getAllCommits');
     console.log('getAllCommits', repo.rootUri.path);
     const commits = execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n');
     return Promise.all(commits
@@ -304,7 +304,7 @@ class GitService {
       this.allCommits[repo!.rootUri.path] = [...(this.allCommits[repo!.rootUri.path]??[]), ...commits_1].
       sort(({hash: hash1}, {hash: hash2}) => commits.indexOf(hash1) - commits.indexOf(hash2))
 
-      logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
+      this._logger.logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
       console.log('getAllCommits done', repo!.rootUri.path, commits_1.length)
       return this.allCommits[repo!.rootUri.path];
     });

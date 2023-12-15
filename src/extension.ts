@@ -11,11 +11,10 @@ import GitTagVersionCompletionProvider from './commands/GitTagVersionCompletionP
 import GitCommitFormattingEditProvider from './commands/GitCommitFormattingEditProvider';
 
 
+
 export async function activate(context: vscode.ExtensionContext) {
   const logger = new Logger();
-  Object.assign(module.exports, { log: logger.log.bind(logger), logObject: logger.logObject.bind(logger) });
-
-  const git = new GitService();
+  const git = new GitService(logger);
 
   const editorController = new EditorController(context, git, logger);
   const settingsPageController = new SettingsPageController(context);
@@ -28,7 +27,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const versionGitTagCommand = new VersionGitTagCommand(git)
 
   const switchToTerminalByNameCommand = new SwitchToTerminalByNameCommand();
-  const gitTagVersionCompletionProvider = new GitTagVersionCompletionProvider(git);
+  const gitTagVersionCompletionProvider = new GitTagVersionCompletionProvider(git, logger);
   const gitCommitFormattingEditProvider = new GitCommitFormattingEditProvider();
 
 
@@ -95,10 +94,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
   logger.log('Extension has been activated');
 }
-
-export function log(message: string) {}
-
-export function logObject(obj: any, label = '') {}
 
 
 export function deactivate() {}
