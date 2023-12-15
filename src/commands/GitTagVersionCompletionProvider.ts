@@ -127,10 +127,9 @@ constructor(private _git: GitService) { }
      * @returns {-1 | 0 | 1} - Returns -1 if a > b, 0 if a == b, and 1 if a < b.
      */
     static compareVersions(a: VersionParts, b: VersionParts): -1 | 0 | 1 {
-      const [aMajor,aMinor,aPatch] = a.map(part => Number(part ?? 0));
-      const [bMajor,bMinor,bPatch] = b.map(part => Number(part ?? 0));
-      return Math.sign(bMajor - aMajor) as -1 | 0 | 1 || Math.sign(bMinor ?? 0 - aMinor ?? 0) as -1 | 0 | 1 || Math.sign(bPatch ?? 0 - aPatch ?? 0) as -1 | 0 | 1;
-      // Math.sign(bMajor - aMajor) as -1 | 0 | 1 || Math.sign(bMinor - aMinor) as -1 | 0 | 1 || Math.sign(bPatch - aPatch) as -1 | 0 | 1;
+      const [aMajor,aMinor,aPatch] = a.map(part => +(part as number) || 0);
+      const [bMajor,bMinor,bPatch] = b.map(part => +(part as number) || 0);
+      return (Math.sign(bMajor - aMajor) || Math.sign(bMinor - aMinor) || Math.sign(bPatch - aPatch)) as -1 | 0 | 1;
     }
 
   }
