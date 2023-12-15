@@ -17,7 +17,7 @@ constructor(private _git: GitService) { }
         const completionItems = (await Promise.all(Object.keys(gitTagVersion).map(async key => {
             const snippet = gitTagVersion[key];
             const files = (await this._git.onlyUnstagedOrStagedChanges(snippet.files));
-            if (files.length < 2 || files[0] !== (await vscode.workspace.findFiles(snippet.files[0]))[0].path) return;
+            if ((files.length < 2 && snippet.files.length > 1) || files[0] !== (await vscode.workspace.findFiles(snippet.files[0]))[0].path) return;
 
             const completionItem = new vscode.CompletionItem(snippet.prefix, vscode.CompletionItemKind.Method);
             // search files in workspace for the version number
