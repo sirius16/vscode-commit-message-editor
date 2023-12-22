@@ -290,23 +290,32 @@ class GitService {
       return [];
     }
 
-    if (this.getNumberOfCommits(repositoryPath) <= (this.allCommits[repo.rootUri.path]??=[]).length) return this.allCommits[repo.rootUri.path]
+    // if (this.getNumberOfCommits(repositoryPath) <= (this.allCommits[repo.rootUri.path]??=[]).length) return this.allCommits[repo.rootUri.path]
     const gitPath = this.api?.git.path ?? "git"
 
     this._logger.logObject(repo.rootUri.path, 'getAllCommits');
     console.log('getAllCommits', repo.rootUri.path);
-    const commits = execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n');
-    return Promise.all(commits
-    .filter(commitHash => !this.allCommits[repo!.rootUri.path]?.some(commit => commit.hash === commitHash))
-    .map(commitHash => repo!.getCommit(commitHash)))
-    // .map(repo.getCommit.bind(repo)))
-    .then(commits_1 => {
-      this.allCommits[repo!.rootUri.path] = [...(this.allCommits[repo!.rootUri.path]??[]), ...commits_1].
-      sort(({hash: hash1}, {hash: hash2}) => commits.indexOf(hash1) - commits.indexOf(hash2))
+    // const commits = execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n');
+    // return Promise.all(commits
+    // .filter(commitHash => !this.allCommits[repo!.rootUri.path]?.some(commit => commit.hash === commitHash))
+    // .map(commitHash => repo!.getCommit(commitHash)))
+    // // .map(repo.getCommit.bind(repo)))
+    // .then(commits_1 => {
+    //   this.allCommits[repo!.rootUri.path] = [...(this.allCommits[repo!.rootUri.path]??[]), ...commits_1].
+    //   sort(({hash: hash1}, {hash: hash2}) => commits.indexOf(hash1) - commits.indexOf(hash2))
 
-      this._logger.logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
-      console.log('getAllCommits done', repo!.rootUri.path, commits_1.length)
-      return this.allCommits[repo!.rootUri.path];
+    //   this._logger.logObject([repo!.rootUri.path, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
+    //   console.log('getAllCommits done', repo!.rootUri.path, commits_1.length)
+    //   return this.allCommits[repo!.rootUri.path];
+    // });
+    const commits = this.allCommits[repo.rootUri.path] ?? [];
+    return Promise.all(execSync(`${gitPath} -C "${repo.rootUri.path}" rev-list --all`).toString().trim().split('\n')
+    .map(commitHash => commits.find(commit => commit.hash === commitHash) ?? repo!.getCommit(commitHash)))
+    .then(commits_1 => {
+       this.allCommits[repo!.rootUri.path] = commits_1;
+       this._logger.logObject([repo!.rootUri.path, commits.length, commits_1.length, this.allCommits[repo!.rootUri.path]?.length], 'getAllCommits done');
+        console.log('getAllCommits done', repo!.rootUri.path, commits.length, commits_1.length)
+        return this.allCommits[repo!.rootUri.path];
     });
   }
 
