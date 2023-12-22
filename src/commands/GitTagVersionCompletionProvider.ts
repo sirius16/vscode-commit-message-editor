@@ -41,7 +41,7 @@ constructor(private _git: GitService, private _logger: Logger) { }
             arguments: version_1 === version ? [key] : [key,version_1]
         };
 
-            completionItem.insertText = new vscode.SnippetString(version_1.replace(semverRegexp,snippet.body.toString().replace(...semverGroupsReplace)));
+            completionItem.insertText = new vscode.SnippetString(version_1.replace(semverRegexp,`^${snippet.body.toString().replace(...semverGroupsReplace)}$`));
               // '<version>','$version')));
             completionItem.documentation = new vscode.MarkdownString(snippet.description ?? '');
 
