@@ -12,7 +12,7 @@ export default class VersionGitTagCommand {
     for (const commit of commits) {
       const [title,] = commit.message.split('\n');
       const regexes = vscode.workspace.getConfiguration('commit-message-editor').get<TagVersion>('gitTagVersion', {});
-      const tagTemplate = Object.keys(regexes).find(key => new RegExp(regexes[key].body.toString().replace('<version>',semverRegex)).test(title));
+      const tagTemplate = Object.keys(regexes).find(key => new RegExp(`^${regexes[key].body.toString().replace('<version>',semverRegex)}$`).test(title));
       if (!tagTemplate) {
         continue;
       }
