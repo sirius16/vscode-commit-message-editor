@@ -102,7 +102,7 @@ constructor(private _git: GitService, private _logger: Logger) { }
         const match = title.match(semverRegexp);
 
         return ["version", "major", "minor", "patch"].map((key, index) => match?.groups?.[key]).filter(part => part) as [version: string, ...VersionParts<string>]
-      }).sort(([, ...a], [, ...b]) => GitTagVersionCompletionProvider.compareVersions(a, b))[0];
+      }).sort(([, ...a], [, ...b]) => GitTagVersionCompletionProvider.compareVersions(a, b))[0] ?? [];
 
       if (!highestVersion) return ["0.0.0","0","0","0"] as [version: string, ...VersionParts<string>]
 
