@@ -37,6 +37,14 @@
       "problemMatcher": [],
       "label": "npm: build:watch - frontend",
       "detail": "npm run clean && tsc --watch"
+    },
+    {
+      "type": "npm",
+      "script": "watch",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: watch",
+      "detail": "npm run esbuild-base -- --sourcemap --watch"
     }
   ],
   "inputs": [
