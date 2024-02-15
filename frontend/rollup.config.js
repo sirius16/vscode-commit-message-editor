@@ -18,6 +18,7 @@ import minifyHTML from 'rollup-plugin-minify-html-literals';
 import {terser} from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 
 export default {
   input: ['dist/pages/cme-editor-page.js', 'dist/pages/cme-settings-page.js'],
@@ -39,6 +40,7 @@ export default {
     }),
     resolve(),
     minifyHTML(),
+    sourcemaps(),
     terser({
       ecma: 2017,
       module: true,
@@ -52,5 +54,6 @@ export default {
         comments: false,
       },
     }),
+
   ],
 };
