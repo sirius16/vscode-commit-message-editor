@@ -13,7 +13,7 @@ export default class UiApi {
   }
 
   sendGitBranchName(branchName: string) {
-
+    branchName = branchName.replace('.', '_');
     // get the task name from settings
     const taskName = vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames').get<string>(branchName, '<No Task Name>');
     this._logger.logObject(vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames'));
