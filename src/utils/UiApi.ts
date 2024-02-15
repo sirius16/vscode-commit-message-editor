@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { Commit } from '../@types/git';
 import createPostMessage from './createPostMessage';
+import Logger from './Logger';
 
 export default class UiApi {
-  constructor(private _webView: vscode.Webview) {}
+  constructor(private _webView: vscode.Webview, private _logger: Logger) {}
 
   sendSCMInputBoxValue(message: string) {
     this._webView.postMessage(
@@ -12,8 +13,12 @@ export default class UiApi {
   }
 
   sendGitBranchName(branchName: string) {
+
     // get the task name from settings
     const taskName = vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames').get<string>(branchName, '<No Task Name>');
+    this._logger.logObject(vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames'));
+    this._logger.log('Sending branch name to webview: ' + branchName);
+
     this._webView.postMessage(
       createPostMessage("receiveGitTaskName", taskName)
     );

@@ -13,7 +13,7 @@ export default class CopyFromScmInputBoxCommand {
     const { primaryEditorPanel } = this._editorController;
 
     if (primaryEditorPanel) {
-      const ui = new UiApi(primaryEditorPanel.webview);
+      const ui = new UiApi(primaryEditorPanel.webview, this._editorController._logger);
       ui.sendSCMInputBoxValue(this._git.getSCMInputBoxMessage());
     }
   }

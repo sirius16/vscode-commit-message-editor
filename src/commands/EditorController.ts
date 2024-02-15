@@ -14,7 +14,7 @@ export default class EditorController {
   constructor(
     private _context: vscode.ExtensionContext,
     private _git: GitService,
-    private _logger: Logger
+    public _logger: Logger
   ) {}
 
   async openInTheMainView(repo: Repository) {
@@ -51,7 +51,7 @@ export default class EditorController {
       this._context.subscriptions.push(this._primaryEditorPanel);
     }
 
-    this._ui = new UiApi(this._primaryEditorPanel.webview);
+    this._ui = new UiApi(this._primaryEditorPanel.webview, this._logger);
     this._ui.sendSCMInputBoxValue(this._git.getSCMInputBoxMessage());
     this._ui.sendConfig(config);
 
