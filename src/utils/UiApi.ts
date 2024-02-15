@@ -17,7 +17,7 @@ export default class UiApi {
     // get the task name from settings
     const taskName = vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames').get<string>(branchName, '<No Task Name>');
     this._logger.logObject(vscode.workspace.getConfiguration('commit-message-editor.gitBranchTaskNames'));
-    this._logger.log('Sending branch name to webview: ' + branchName);
+    this._logger.log('Sending branch name: ' + branchName + ' and task name: ' + taskName);
 
     this._webView.postMessage(
       createPostMessage("receiveGitTaskName", taskName)
