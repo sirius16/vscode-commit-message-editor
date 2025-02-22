@@ -49,9 +49,6 @@
     "url": "https://github.com/bendera/vscode-commit-message-editor"
   },
   "activationEvents": [
-    "onCommand:commitMessageEditor.openEditor",
-    "onCommand:commitMessageEditor.copyFromSCMInputBox",
-    "onCommand:commitMessageEditor.openSettingsPage",
     "onWebviewPanel:copyFromExtensionMessageBox",
     "onLanguage:git-commit",
     "onStartupFinished"
@@ -410,7 +407,15 @@
     "test": "node ./out/test/runTest.js",
     "wdio": "wdio run ./wdio.conf.ts",
     "vscode:package": "vsce package",
-    "vscode:install": "vsce package && code --install-extension `ls -t *.vsix | head -n 1`"
+    "vscode:install": "vsce package && code --install-extension `ls -t *.vsix | head -n 1`",
+    "pack": "yes | vsce package",
+    "postpack": "PYTHONPATH=../../.venv/bin:../../ ../../.venv/bin/python3 postpack.py",
+    "patch": "npm version patch",
+    "postpatch": "npm run pack",
+    "minor": "npm version minor",
+    "postminor": "npm run pack",
+    "major": "npm version major",
+    "postmajor": "npm run pack"
   },
   "extensionDependencies": [
     "vscode.git"
@@ -443,19 +448,5 @@
     "ajv": "^8.12.0",
     "ps-tree": "^1.2.0",
     "vscode-codicons": "0.0.17"
-  },
-  "bundleDependencies": [
-    "phoihos.git-commit-message-editor",
-    "eamodio.gitlens",
-    "vscode-icons-team.vscode-icons",
-    "emmanuelbeziat.vscode-great-icons",
-    "PKief.material-icon-theme",
-    "TabNine.tabnine-vscode",
-    "GitHub.copilot",
-    "GitHub.copilot-chat",
-    "EasyCodeAI.chatgpt-gpt4-gpt3-vscode",
-    "GitLab.gitlab-workflow",
-    "geddski.macros",
-    "joekon.ssmacro"
-  ]
+  }
 }

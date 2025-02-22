@@ -8,7 +8,7 @@ test/**/*.js
 wdio.conf.js
 wdio.conf.js.map
 
-.vscode/
+.vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json

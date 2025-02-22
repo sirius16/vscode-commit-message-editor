@@ -45,7 +45,47 @@
       "problemMatcher": [],
       "label": "npm: watch",
       "detail": "npm run esbuild-base -- --sourcemap --watch"
-    }
+    },
+    {
+      "type": "npm",
+      "script": "pack",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "npm: pack",
+      "detail": "yes | vsce package"
+  },
+  {
+      "type": "npm",
+      "script": "postpack",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "npm: postpack",
+      "detail": "PYTHONPATH=../../.venv/bin:../../../../.venv/bin/python3 postpack.py"
+  },
+  {
+      "label": "npm: patch",
+      "type": "npm",
+      "script": "patch",
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "npm version patch"
+  },
+  {
+      "label": "npm: minor",
+      "type": "npm",
+      "script": "minor",
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "npm version minor"
+  },
+  {
+      "label": "npm: major",
+      "type": "npm",
+      "script": "major",
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "npm version major"
+  },
   ],
   "inputs": [
     {
