@@ -3,6 +3,7 @@ import { basename } from 'path';
 import { findAsync } from './utils';
 import ps_tree from 'ps-tree';
 
+
 export default class SwitchToTerminalByNameCommand {
 
   async run(): Promise<vscode.Terminal>;
@@ -26,8 +27,10 @@ export default class SwitchToTerminalByNameCommand {
       name = shell;
     }
 
-    const terminal = await findAsync([...vscode.window.terminals].reverse(), t => t.name === name && t.processId.then(pid => !!pid && new Promise(resolve => ps_tree(pid, (err, children) => resolve(children.length === 0)))))?? vscode.window.createTerminal(name);
-    // const terminal = [...vscode.window.terminals].reverse().find(async t => t.name === name && !execSync(`pgrep -P ${await t.processId}`)) ?? vscode.window.createTerminal(name);
+    const currentEditorUri = vscode.window.activeTextEditor?.document.uri;
+    const currentWorkspaceFolder = currentEditorUri && vscode.workspace.getWorkspaceFolder(currentEditorUri);
+
+    const terminal = await findAsync([...vscode.window.terminals].reverse(), t => t.name === name && t.processId.then(pid => !!pid && (!currentWorkspaceFolder || currentWorkspaceFolder.uri.fsPath === t.shellIntegration?.cwd?.fsPath) && new Promise(resolve => ps_tree(pid, (err, children) => resolve(children.length === 0)))))?? currentWorkspaceFolder ? vscode.window.createTerminal({ name, cwd: currentWorkspaceFolder?.uri.fsPath }) : vscode.window.createTerminal({ name });
     terminal.show();
     return terminal;
   }
