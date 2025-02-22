@@ -343,7 +343,9 @@
           "type": "object",
           "description": "Task names corresponding to git branches",
           "default": {},
-          "items": {"type": "string"}
+          "items": {
+            "type": "string"
+          }
         },
         "commit-message-editor.gitTagVersion": {
           "type": "object",
@@ -381,9 +383,21 @@
         }
       }
     }
-
   },
-  "bundledDependencies": ["phoihos.git-commit-message-editor","eamodio.gitlens","vscode-icons-team.vscode-icons","emmanuelbeziat.vscode-great-icons","PKief.material-icon-theme","TabNine.tabnine-vscode","GitHub.copilot","GitHub.copilot-chat","EasyCodeAI.chatgpt-gpt4-gpt3-vscode","GitLab.gitlab-workflow","geddski.macros","joekon.ssmacro"],
+  "bundledDependencies": [
+    "phoihos.git-commit-message-editor",
+    "eamodio.gitlens",
+    "vscode-icons-team.vscode-icons",
+    "emmanuelbeziat.vscode-great-icons",
+    "PKief.material-icon-theme",
+    "TabNine.tabnine-vscode",
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "EasyCodeAI.chatgpt-gpt4-gpt3-vscode",
+    "GitLab.gitlab-workflow",
+    "geddski.macros",
+    "joekon.ssmacro"
+  ],
   "scripts": {
     "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run esbuild-base -- --sourcemap",
@@ -394,7 +408,9 @@
     "watch": "npm run esbuild-base -- --sourcemap --watch",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
-    "wdio": "wdio run ./wdio.conf.ts"
+    "wdio": "wdio run ./wdio.conf.ts",
+    "vscode:package": "vsce package",
+    "vscode:install": "vsce package && code --install-extension `ls -t *.vsix | head -n 1`"
   },
   "extensionDependencies": [
     "vscode.git"
@@ -412,6 +428,7 @@
     "chromedriver": "^111.0.0",
     "esbuild": "^0.17.5",
     "glob": "^8.1.0",
+    "lit": "2.8.0",
     "mocha": "^10.2.0",
     "semver": "^7.5.0",
     "ts-node": "^10.9.1",
@@ -419,11 +436,24 @@
     "typescript": "^4.9.5",
     "vscode-test": "^1.5.2",
     "wdio-chromedriver-service": "^8.1.1",
-    "wdio-vscode-service": "^5.0.0",
-    "lit": "2.8.0"
+    "wdio-vscode-service": "^5.0.0"
   },
   "dependencies": {
     "ajv": "^8.12.0",
     "vscode-codicons": "0.0.17"
-  }
+  },
+  "bundleDependencies": [
+    "phoihos.git-commit-message-editor",
+    "eamodio.gitlens",
+    "vscode-icons-team.vscode-icons",
+    "emmanuelbeziat.vscode-great-icons",
+    "PKief.material-icon-theme",
+    "TabNine.tabnine-vscode",
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "EasyCodeAI.chatgpt-gpt4-gpt3-vscode",
+    "GitLab.gitlab-workflow",
+    "geddski.macros",
+    "joekon.ssmacro"
+  ]
 }
