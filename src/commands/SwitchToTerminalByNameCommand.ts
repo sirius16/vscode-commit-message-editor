@@ -1,9 +1,7 @@
 import * as vscode from 'vscode';
 import { basename } from 'path';
-import { execSync } from 'child_process';
 import { findAsync } from './utils';
-import { lookup } from 'ps-node';
-import ps_tree = require('ps-tree');
+import ps_tree from 'ps-tree';
 
 export default class SwitchToTerminalByNameCommand {
 
@@ -28,7 +26,7 @@ export default class SwitchToTerminalByNameCommand {
       name = shell;
     }
 
-    const terminal = (await findAsync([...vscode.window.terminals].reverse(), t => t.name === name && new Promise(async resolve => ps_tree(await t.processId, (err, children) => resolve(children.length === 0))) ))?? vscode.window.createTerminal(name);
+    const terminal = await findAsync([...vscode.window.terminals].reverse(), t => t.name === name && t.processId.then(pid => !!pid && new Promise(resolve => ps_tree(pid, (err, children) => resolve(children.length === 0)))))?? vscode.window.createTerminal(name);
     // const terminal = [...vscode.window.terminals].reverse().find(async t => t.name === name && !execSync(`pgrep -P ${await t.processId}`)) ?? vscode.window.createTerminal(name);
     terminal.show();
     return terminal;
