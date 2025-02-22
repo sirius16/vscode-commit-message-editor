@@ -42,7 +42,7 @@
       },
       "mac": "shift+cmd+g t",
       "windows": "shift+win+g t"
-  }
+    }
   ],
   "icon": "icon.png",
   "repository": {
@@ -439,7 +439,9 @@
     "wdio-vscode-service": "^5.0.0"
   },
   "dependencies": {
+    "@types/ps-tree": "^1.1.6",
     "ajv": "^8.12.0",
+    "ps-tree": "^1.2.0",
     "vscode-codicons": "0.0.17"
   },
   "bundleDependencies": [
